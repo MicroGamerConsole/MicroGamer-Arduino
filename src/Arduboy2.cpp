@@ -148,17 +148,16 @@ void Arduboy2Base::bootLogoShell(void (*drawLogo)(int16_t))
 {
   digitalWriteRGB(RED_LED, RGB_ON);
 
-  for (int16_t y = -18; y <= 24; y++) {
+  for (int16_t y = -16; y <= 24; y++) {
     if (pressed(RIGHT_BUTTON)) {
-      digitalWriteRGB(RGB_OFF, RGB_OFF, RGB_OFF); // all LEDs off
-      return;
+      goto abort;
     }
 
-    if (y == -4) {
+    if (y == 0) {
       digitalWriteRGB(RED_LED, RGB_OFF);    // red LED off
       digitalWriteRGB(GREEN_LED, RGB_ON);   // green LED on
     }
-    else if (y == 24) {
+    else if (y == 16) {
       digitalWriteRGB(GREEN_LED, RGB_OFF);  // green LED off
       digitalWriteRGB(BLUE_LED, RGB_ON);    // blue LED on
     }
@@ -166,18 +165,14 @@ void Arduboy2Base::bootLogoShell(void (*drawLogo)(int16_t))
     clear();
     (*drawLogo)(y); // call the function that actually draws the logo
     display();
-    delayShort(27);
-    // longer delay post boot, we put it inside the loop to
-    // save the flash calling clear/delay again outside the loop
-    if (y==-16) {
-      delayShort(250);
-    }
+    delayShort(16);
   }
 
-  delayShort(700);
-  digitalWriteRGB(BLUE_LED, RGB_OFF);
-
+  delayShort(500);
   bootLogoExtra();
+
+ abort:
+  digitalWriteRGB(RGB_OFF, RGB_OFF, RGB_OFF); // all LEDs off
 }
 
 // Virtual function overridden by derived class
@@ -1119,20 +1114,16 @@ void Arduboy2::bootLogoText()
 {
   digitalWriteRGB(RED_LED, RGB_ON);
 
-  textSize = 2;
-
-  for (int8_t y = -18; y <= 24; y++) {
+  for (int16_t y = -16; y <= 24; y++) {
     if (pressed(RIGHT_BUTTON)) {
-      digitalWriteRGB(RGB_OFF, RGB_OFF, RGB_OFF); // all LEDs off
-      textSize = 1;
-      return;
+      goto abort;
     }
 
-    if (y == -4) {
+    if (y == 0) {
       digitalWriteRGB(RED_LED, RGB_OFF);    // red LED off
       digitalWriteRGB(GREEN_LED, RGB_ON);   // green LED on
     }
-    else if (y == 24) {
+    else if (y == 16) {
       digitalWriteRGB(GREEN_LED, RGB_OFF);  // green LED off
       digitalWriteRGB(BLUE_LED, RGB_ON);    // blue LED on
     }
@@ -1140,21 +1131,18 @@ void Arduboy2::bootLogoText()
     clear();
     cursor_x = 23;
     cursor_y = y;
-    print("ARDUBOY");
+    textSize = 2;
+    print(F("ARDUBOY"));
+    textSize = 1;
     display();
-    delayShort(27);
-    // longer delay post boot, we put it inside the loop to
-    // save the flash calling clear/delay again outside the loop
-    if (y==-16) {
-      delayShort(250);
-    }
+    delayShort(12);
   }
 
-  delayShort(700);
-  digitalWriteRGB(BLUE_LED, RGB_OFF);
-  textSize = 1;
-
+  delayShort(500);
   bootLogoExtra();
+
+ abort:
+  digitalWriteRGB(RGB_OFF, RGB_OFF, RGB_OFF); // all LEDs off
 }
 
 void Arduboy2::bootLogoExtra()
