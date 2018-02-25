@@ -8,7 +8,7 @@
 #define ARDUBOY2_H
 
 #include <Arduino.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 #include "Arduboy2Core.h"
 #include "Sprites.h"
 #include <Print.h>
@@ -67,8 +67,10 @@
 #define PIXEL_SAFE_MODE
 
 // pixel colors
-#define BLACK 0  /**< Color value for an unlit pixel for draw functions. */
-#define WHITE 1  /**< Color value for a lit pixel for draw functions. */
+#define BLACK   0  /**< Color value for an unlit pixel for draw functions. */
+#define WHITE   1  /**< Color value for a lit pixel for draw functions. */
+#define INVERSE 2
+
 /** \brief
  * Color value to indicate pixels are to be inverted.
  *
@@ -641,8 +643,8 @@ class Arduboy2Base : public Arduboy2Core
    *
    * \details
    * The Arduino random number generator is seeded with a random value
-   * derived from entropy from an ADC reading of a floating pin combined with
-   * the microseconds since boot.
+   * derrived from entropy from the temperature, voltage reading, and
+   * microseconds since boot.
    *
    * This method is still most effective when called after a semi-random time,
    * such as after a user hits a button to start a game or other semi-random
@@ -741,7 +743,7 @@ class Arduboy2Base : public Arduboy2Core
    * is being held down:
    *
    * \code
-   * if (arduboy.everyXFrames(5)) {
+   * if (arduboy.everyXframes(5)) {
    *   if arduboy.pressed(A_BUTTON) {
    *     fireShot();
    *   }
