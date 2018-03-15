@@ -143,7 +143,7 @@ const uint8_t PROGMEM lcdBootProgram[] = {
   // set page address range
   // 0x22, 0x00, PAGE_ADDRESS_END
 
-  0xA0, 0xC0, // Flip the screen
+  OLED_HORIZ_FLIPPED, OLED_VERTICAL_FLIPPED // Flip the screen
 };
 
 
@@ -355,13 +355,13 @@ void Arduboy2Core::allPixelsOn(bool on)
 // flip the display vertically or set to normal
 void Arduboy2Core::flipVertical(bool flipped)
 {
-  sendLCDCommand(flipped ? OLED_VERTICAL_FLIPPED : OLED_VERTICAL_NORMAL);
+  sendLCDCommand(flipped ? OLED_VERTICAL_NORMAL: OLED_VERTICAL_FLIPPED);
 }
 
 // flip the display horizontally or set to normal
 void Arduboy2Core::flipHorizontal(bool flipped)
 {
-  sendLCDCommand(flipped ? OLED_HORIZ_FLIPPED : OLED_HORIZ_NORMAL);
+  sendLCDCommand(flipped ? OLED_HORIZ_NORMAL: OLED_HORIZ_FLIPPED);
 }
 
 /* Buttons */
