@@ -1,14 +1,12 @@
-# Arduboy2 Library
+# Micro:Gamer Arduino Library
 
-The Arduboy2 library is maintained in a git repository hosted on [GitHub](https://github.com/) at:
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/MicroGamerConsole/Lobby)
 
-https://github.com/MLXXXp/Arduboy2
+The Micro:Gamer Arduino library is maintained in a git repository hosted on [GitHub](https://github.com/) at:
 
-The **Arduboy2** library is a fork of the [Arduboy library](https://github.com/Arduboy/Arduboy), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the Arduino based [Arduboy miniature game system](https://www.arduboy.com/).
+https://github.com/MicroGamerConsole/MicroGamer-Arduino
 
-The name *Arduboy2* doesn't indicate that it's for a new "next generation" of the Arduboy hardware. The name was changed so it can coexist in the Arduino IDE with the current *Arduboy* library, without conflict. This way, existing sketches can continue to use the *Arduboy* library and class, without changes, while new sketches can be written (or old ones modified) to use and take advantage of the capabilities of the *Arduboy2* class and library.
-
-For notes on the differences between the *Arduboy2* library and the original *Arduboy* library, and for information on migrating a sketch currently using the *Arduboy* library, see the sections at the end of this document.
+The Micro:Gamer Arduino library is a fork of the [Arduboy2 library](), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the Micro:Gamer miniature game system.
 
 ## Library documentation
 
