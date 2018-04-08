@@ -158,87 +158,41 @@ class Arduboy2Core
     uint8_t static buttonsState();
 
     /** \brief
-     * Paint 8 pixels vertically to the display.
-     *
-     * \param pixels A byte whose bits specify a vertical column of 8 pixels.
-     *
-     * \details
-     * A byte representing a vertical column of 8 pixels is written to the
-     * display at the current page and column address. The address is then
-     * incremented. The page/column address will wrap to the start of the
-     * display (the top left) when it increments past the end (lower right).
-     *
-     * The least significant bit represents the top pixel in the column.
-     * A bit set to 1 is lit, 0 is unlit.
-     *
-     * Example:
-     *
-     *     X = lit pixels, . = unlit pixels
-     *
-     *     blank()                          paint8Pixels() 0xFF, 0, 0xF0, 0, 0x0F
-     *     v TOP LEFT corner (8x9)          v TOP LEFT corner
-     *     . . . . . . . . (page 1)         X . . . X . . . (page 1)
-     *     . . . . . . . .                  X . . . X . . .
-     *     . . . . . . . .                  X . . . X . . .
-     *     . . . . . . . .                  X . . . X . . .
-     *     . . . . . . . .                  X . X . . . . .
-     *     . . . . . . . .                  X . X . . . . .
-     *     . . . . . . . .                  X . X . . . . .
-     *     . . . . . . . . (end of page 1)  X . X . . . . . (end of page 1)
-     *     . . . . . . . . (page 2)         . . . . . . . . (page 2)
-     */
-    void static paint8Pixels(uint8_t pixels);
-
-    /** \brief
-     * Paints an entire image directly to the display from program memory.
+     * Asynchronously paints an entire image directly to the display from
+     * program memory.
      *
      * \param image A byte array in program memory representing the entire
      * contents of the display.
      *
      * \details
      * The contents of the specified array in program memory is written to the
-     * display. Each byte in the array represents a vertical column of 8 pixels
-     * with the least significant bit at the top. The bytes are written starting
-     * at the top left, progressing horizontally and wrapping at the end of each
-     * row, to the bottom right. The size of the array must exactly match the
-     * number of pixels in the entire display.
+     * display. This is an asynchronous function, which means that the function
+     * will return before the buffer is completely sent to the display. Each
+     * byte in the array represents a vertical column of 8 pixels with the least
+     * significant bit at the top. The bytes are written starting at the top
+     * left, progressing horizontally and wrapping at the end of each row, to
+     * the bottom right. The size of the array must exactly match the number of
+     * pixels in the entire display.
      *
-     * \see paint8Pixels()
+     * \see paintScreenInProgress() waitEndOfPaintScreen()
      */
     void static paintScreen(const uint8_t *image);
 
     /** \brief
-     * Paints an entire image directly to the display from an array in RAM.
+     * Paint screen in progress.
      *
-     * \param image A byte array in RAM representing the entire contents of
-     * the display.
-     * \param clear If `true` the array in RAM will be cleared to zeros upon
-     * return from this function. If `false` the RAM buffer will remain
-     * unchanged. (optional; defaults to `false`)
+     * \return True if a screen transfer is in progress.
      *
-     * \details
-     * The contents of the specified array in RAM is written to the display.
-     * Each byte in the array represents a vertical column of 8 pixels with
-     * the least significant bit at the top. The bytes are written starting
-     * at the top left, progressing horizontally and wrapping at the end of
-     * each row, to the bottom right. The size of the array must exactly
-     * match the number of pixels in the entire display.
-     *
-     * If parameter `clear` is set to `true` the RAM array will be cleared to
-     * zeros after its contents are written to the display.
-     *
-     * \see paint8Pixels()
+     * \see paintScreen() waitEndOfPaintScreen()
      */
-    void static paintScreen(uint8_t image[], bool clear = false);
+    bool static paintScreenInProgress();
 
     /** \brief
-     * Blank the display screen by setting all pixels off.
+     * Wait end of paint screen.
      *
-     * \details
-     * All pixels on the screen will be written with a value of 0 to turn
-     * them off.
+     * \see paintScreen()
      */
-    void static blank();
+    void static waitEndOfPaintScreen();
 
     /** \brief
      * Invert the entire display or set it back to normal.
@@ -372,6 +326,16 @@ class Arduboy2Core
     void static bootOLED();
     void static bootPins();
     void static bootPowerSaving();
+    void static bootTWI();
+
+    void static twiBeginTransmission(uint8_t address);
+    uint8_t static twiTransmit(const uint8_t data[],
+                               size_t quantity);
+
+    void static twiTransmitAsync(const uint8_t data[],
+                                    size_t quantity);
+    uint8_t static twiTransmit(uint8_t data);
+    uint8_t static twiEndTransmission();
 };
 
 #endif

@@ -80,6 +80,13 @@ All text above, and the splash screen must be included in any redistribution
 #define SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 0x29
 #define SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
 
+// Two Wire Interface
+
+#define TWI_DEVICE  (NRF_TWI1)
+#define TWI_PIN_SDA (20)
+#define TWI_PIN_SCL (19)
+#define TWI_IRQn (SPI1_TWI1_IRQn)
+
 const uint8_t PROGMEM lcdBootProgram[] = {
   // boot defaults are commented out but left here in case they
   // might prove useful for reference
@@ -146,14 +153,21 @@ const uint8_t PROGMEM lcdBootProgram[] = {
   OLED_HORIZ_FLIPPED, OLED_VERTICAL_FLIPPED // Flip the screen
 };
 
+volatile bool twiInProgress = false;
+const uint8_t *twiTxData = NULL;
+size_t twiByteToSend = 0;
 
-Arduboy2Core::Arduboy2Core() { }
+Arduboy2Core::Arduboy2Core()
+{
+  twiInProgress = false;
+}
 
 void Arduboy2Core::boot()
 {
   bootPins();
+  bootTWI();
   bootOLED();
-  // bootPowerSaving();
+  bootPowerSaving();
 }
 
 // Pins are set to the proper modes and levels for the specific hardware.
@@ -172,13 +186,6 @@ void Arduboy2Core::bootPins()
 
 void Arduboy2Core::bootOLED()
 {
-  
-  // I2C Init
-  Wire.begin();
-
-  //Wire.setClock(250000);
-  Wire.setClock(400000);
-
   // Setup reset pin direction (used by both SPI and I2C)
   pinMode(SCREEN_RESET_PIN, OUTPUT);
   digitalWrite(SCREEN_RESET_PIN, HIGH);
@@ -197,6 +204,172 @@ void Arduboy2Core::bootOLED()
   for (uint8_t i = 0; i < sizeof(lcdBootProgram); i++) {
     sendLCDCommand(pgm_read_byte(lcdBootProgram + i));
   }
+}
+
+void Arduboy2Core::bootTWI()
+{
+  TWI_DEVICE->EVENTS_TXDSENT = 0;
+  TWI_DEVICE->EVENTS_STOPPED = 0;
+  TWI_DEVICE->EVENTS_RXDREADY = 0;
+  TWI_DEVICE->EVENTS_ERROR = 0;
+
+  TWI_DEVICE->INTENSET =
+        TWI_INTENSET_TXDSENT_Set  << TWI_INTENSET_TXDSENT_Pos  |
+        TWI_INTENSET_STOPPED_Set  << TWI_INTENSET_STOPPED_Pos  |
+        TWI_INTENSET_ERROR_Set    << TWI_INTENSET_ERROR_Pos    |
+        TWI_INTENSET_RXDREADY_Set << TWI_INTENSET_RXDREADY_Pos;
+
+  Wire.begin();
+  Wire.setClock(400000);
+}
+
+/* TWI  */
+
+void Arduboy2Core::twiBeginTransmission(uint8_t address)
+{
+  TWI_DEVICE->ADDRESS = address;
+  TWI_DEVICE->SHORTS = 0x0UL;
+  TWI_DEVICE->TASKS_RESUME = 0x1UL;
+  TWI_DEVICE->TASKS_STARTTX = 0x1UL;
+}
+
+uint8_t Arduboy2Core::twiTransmit(const uint8_t data[],
+                                  size_t quantity)
+{
+  for(size_t i = 0; i < quantity; ++i)
+  {
+    TWI_DEVICE->TXD = data[i];
+
+    while(!TWI_DEVICE->EVENTS_TXDSENT && !TWI_DEVICE->EVENTS_ERROR);
+
+    if (TWI_DEVICE->EVENTS_ERROR)
+    {
+      break;
+    }
+
+    TWI_DEVICE->EVENTS_TXDSENT = 0x0UL;
+  }
+
+  if (TWI_DEVICE->EVENTS_ERROR)
+  {
+    TWI_DEVICE->EVENTS_ERROR = 0x0UL;
+
+    uint32_t error = TWI_DEVICE->ERRORSRC;
+
+    TWI_DEVICE->ERRORSRC = error;
+
+    if (error == TWI_ERRORSRC_ANACK_Msk)
+    {
+      return 2;
+    }
+    else if (error == TWI_ERRORSRC_DNACK_Msk)
+    {
+      return 3;
+    }
+    else
+    {
+      return 4;
+    }
+  }
+
+  return 0;
+}
+
+void Arduboy2Core::twiTransmitAsync(const uint8_t data[],
+                                       size_t quantity)
+{
+
+  if (quantity == 0) {
+    return;
+  }
+
+  if (quantity > 1 ) {
+    twiInProgress = true;
+    twiTxData = data + 1;
+    twiByteToSend = quantity - 1;
+
+    NVIC_ClearPendingIRQ(TWI_IRQn);
+    NVIC_EnableIRQ(TWI_IRQn);
+  }
+
+  TWI_DEVICE->TXD = data[0];
+}
+
+uint8_t Arduboy2Core::twiTransmit(uint8_t data)
+{
+    twiTransmit(&data, 1);
+}
+
+uint8_t Arduboy2Core::twiEndTransmission()
+{
+  TWI_DEVICE->TASKS_STOP = 0x1UL;
+  while(!TWI_DEVICE->EVENTS_STOPPED);
+  TWI_DEVICE->EVENTS_STOPPED = 0x0UL;
+
+  if (TWI_DEVICE->EVENTS_ERROR)
+  {
+    TWI_DEVICE->EVENTS_ERROR = 0x0UL;
+
+    uint32_t error = TWI_DEVICE->ERRORSRC;
+
+    TWI_DEVICE->ERRORSRC = error;
+
+    if (error == TWI_ERRORSRC_ANACK_Msk)
+    {
+      return 2;
+    }
+    else if (error == TWI_ERRORSRC_DNACK_Msk)
+    {
+      return 3;
+    }
+    else
+    {
+      return 4;
+    }
+  }
+
+  return 0;
+}
+
+extern "C" {
+
+void SPI1_TWI1_IRQHandler(void)
+{
+
+  if(TWI_DEVICE->EVENTS_TXDSENT)
+  {
+    TWI_DEVICE->EVENTS_TXDSENT = 0;
+    if(twiByteToSend != 0)
+    {
+      TWI_DEVICE->TXD = *twiTxData++;
+      twiByteToSend--;
+    }
+    else
+    {
+      TWI_DEVICE->TASKS_STOP = 1;
+    }
+  }
+
+  if(TWI_DEVICE->EVENTS_STOPPED)
+  {
+    TWI_DEVICE->EVENTS_STOPPED = 0;
+    twiInProgress = false;
+    NVIC_DisableIRQ(TWI_IRQn);
+  }
+
+  if(TWI_DEVICE->EVENTS_RXDREADY)
+  {
+    TWI_DEVICE->EVENTS_RXDREADY = 0;
+  }
+
+  if(TWI_DEVICE->EVENTS_ERROR)
+  {
+    TWI_DEVICE->EVENTS_ERROR = 0;
+    twiInProgress = false;
+    NVIC_DisableIRQ(TWI_IRQn);
+  }
+}
+
 }
 
 /* Power Management */
@@ -238,13 +411,10 @@ uint8_t Arduboy2Core::height() { return HEIGHT; }
 
 /* Drawing */
 
-// void Arduboy2Core::paint8Pixels(uint8_t pixels)
-// {
-//   SPItransfer(pixels);
-// }
-
 void Arduboy2Core::paintScreen(const uint8_t *image)
 {
+  waitEndOfPaintScreen();
+
   sendLCDCommand(SSD1306_COLUMNADDR);
   sendLCDCommand(0);   // Column start address (0 = reset)
   sendLCDCommand(WIDTH-1); // Column end address (127 = reset)
@@ -253,89 +423,54 @@ void Arduboy2Core::paintScreen(const uint8_t *image)
   sendLCDCommand(0); // Page start address (0 = reset)
   sendLCDCommand(7); // Page end address
 
-  // I2C
-  for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-    // send a bunch of data in one xmission
-    Wire.beginTransmission(SSD1306_I2C_ADDRESS);
-    Wire.write(0x40);
-    for (uint8_t x=0; x<16; x++) {
-      Wire.write(image[i]);
-      i++;
-    }
-    i--;
-    Wire.endTransmission();
-  }
+  twiBeginTransmission(SSD1306_I2C_ADDRESS);
+  twiTransmit(0x40);
+  twiTransmitAsync(image, SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8);
 }
 
-// paint from a memory buffer, this should be FAST as it's likely what
-// will be used by any buffer based subclass
-void Arduboy2Core::paintScreen(uint8_t image[], bool clear)
+bool Arduboy2Core::paintScreenInProgress()
 {
-  sendLCDCommand(SSD1306_COLUMNADDR);
-  sendLCDCommand(0);   // Column start address (0 = reset)
-  sendLCDCommand(WIDTH-1); // Column end address (127 = reset)
-
-  sendLCDCommand(SSD1306_PAGEADDR);
-  sendLCDCommand(0); // Page start address (0 = reset)
-  sendLCDCommand(7); // Page end address
-
-  // I2C
-  for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-    // send a bunch of data in one xmission
-    Wire.beginTransmission(SSD1306_I2C_ADDRESS);
-    Wire.write(0x40);
-    for (uint8_t x=0; x<16; x++) {
-      Wire.write(image[i]);
-      if (clear) {
-        image[i] = 0;
-      }
-      i++;
-    }
-    i--;
-    Wire.endTransmission();
-  }
+    return twiInProgress;
 }
 
-void Arduboy2Core::blank()
+void Arduboy2Core::waitEndOfPaintScreen()
 {
-  // for (int i = 0; i < (HEIGHT*WIDTH)/8; i++)
-  //   SPItransfer(0x00);
+  while (twiInProgress) {
+    idle();
+  }
 }
 
 void Arduboy2Core::sendLCDCommand(uint8_t command)
 {
-  // I2C
-  uint8_t control = 0x00;   // Co = 0, D/C = 0
-  Wire.beginTransmission(SSD1306_I2C_ADDRESS);
-  Wire.write(control);
-  Wire.write(command);
-  Wire.endTransmission();
+  uint8_t data[2] = {0x00,  // Co = 0, D/C = 0
+                     command};
+  twiBeginTransmission(SSD1306_I2C_ADDRESS);
+  twiTransmit(data, 2);
+  twiEndTransmission();
 }
 
 void Arduboy2Core::sendLCDCommand(uint8_t command,
                                   uint8_t command2)
 {
-  // I2C
-  uint8_t control = 0x00;   // Co = 0, D/C = 0
-  Wire.beginTransmission(SSD1306_I2C_ADDRESS);
-  Wire.write(control);
-  Wire.write(command);
-  Wire.write(command2);
-  Wire.endTransmission();
+  uint8_t data[3] = {0x00,  // Co = 0, D/C = 0
+                     command,
+                     command2};
+  twiBeginTransmission(SSD1306_I2C_ADDRESS);
+  twiTransmit(data, 3);
+  twiEndTransmission();
 }
 
 void Arduboy2Core::sendLCDCommand(uint8_t command,
                                   uint8_t command2,
                                   uint8_t command3)
 {
-  // I2C
-  uint8_t control = 0x00;   // Co = 0, D/C = 0
-  Wire.beginTransmission(SSD1306_I2C_ADDRESS);
-  Wire.write(control);
-  Wire.write(command);
-  Wire.write(command2);
-  Wire.write(command3);
-  Wire.endTransmission();
+  uint8_t data[4] = {0x00,  // Co = 0, D/C = 0
+                     command,
+                     command2,
+                     command3};
+  twiBeginTransmission(SSD1306_I2C_ADDRESS);
+  twiTransmit(data, 4);
+  twiEndTransmission();
 }
 
 // invert the display or set to normal
@@ -397,4 +532,3 @@ void Arduboy2Core::delayShort(uint16_t ms)
 {
   delay((unsigned long) ms);
 }
-

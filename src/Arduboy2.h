@@ -350,9 +350,15 @@ class Arduboy2Base : public Arduboy2Core
    *
    * \details
    * The contents of the display buffer in RAM are copied to the display and
-   * will appear on the screen.
+   * will appear on the screen. This is an asynchronous function, which means
+   * that the function will return before the buffer is completely sent to the
+   * display. It is therefore recommended to wait until the transfer is complete
+   * before drawing on the frame buffer, otherwise graphic glitches may appear.
+   * You can use the function waitDisplayUpdate() to make sure the frame buffer
+   * transfer is complete before drawing a new frame, or enable double
+   * buffering.
    *
-   * \see display(bool)
+   * \see display(bool) waitDisplayUpdate() enableDoubleBuffer()
    */
   void display();
 
@@ -372,9 +378,36 @@ class Arduboy2Base : public Arduboy2Core
    * Using `display(CLEAR_BUFFER)` is faster and produces less code than
    * calling `display()` followed by `clear()`.
    *
-   * \see display() clear()
+   * \see display() clear() waitDisplayUpdate() enableDoubleBuffer()
    */
   void display(bool clear);
+
+  /** \brief
+   * Wait until the asynchronous display update is complete
+   *
+   * \see display()
+   */
+  void waitDisplayUpdate();
+
+  /** \brief
+   * Enable double buffering
+   *
+   * \details
+   * This will allocate a second display buffer to be able to draw on one buffer
+   * while the other is sent to the display. In some cases this solution can
+   * provide higher frame rate, but it also takes an extra 1K of RAM to allocate
+   * the extra buffer.
+   *
+   * \see display()
+   */
+  void enableDoubleBuffer();
+
+  /** \brief
+   * Returns the state of double buffering feature.
+   *
+   * \return True if double buffer is enabled.
+   */
+  bool doubleBuffer();
 
   /** \brief
    * Set a single pixel in the display buffer to the specified color.
@@ -1104,9 +1137,14 @@ class Arduboy2Base : public Arduboy2Core
    *
    * \see getBuffer()
    */
-  static uint8_t sBuffer[(HEIGHT*WIDTH)/8];
+  static uint8_t *sBuffer;
 
  protected:
+
+  // Static allocation of a single frame buffer. When double buffering is
+  // enabled, the second buffer is allocated dynamically with malloc().
+  static uint8_t staticAllocatedBuffer[(HEIGHT*WIDTH)/8];
+
   // helper function for sound enable/disable system control
   void sysCtrlSound(uint8_t buttons, uint8_t led, uint8_t eeVal);
 
@@ -1126,6 +1164,8 @@ class Arduboy2Base : public Arduboy2Core
   unsigned long nextFrameStart;
   bool justRendered;
   uint8_t lastFrameDurationMs;
+
+  static uint8_t *displayBuffer;
 };
 
 
@@ -1431,6 +1471,7 @@ class Arduboy2 : public Print, public Arduboy2Base
   uint8_t textBackground;
   uint8_t textSize;
   bool textWrap;
+
 };
 
 #endif

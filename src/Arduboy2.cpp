@@ -12,7 +12,9 @@
 //========== class Arduboy2Base ==========
 //========================================
 
-uint8_t Arduboy2Base::sBuffer[];
+uint8_t Arduboy2Base::staticAllocatedBuffer[];
+uint8_t *Arduboy2Base::displayBuffer;
+uint8_t *Arduboy2Base::sBuffer;
 
 Arduboy2Base::Arduboy2Base()
 {
@@ -26,6 +28,9 @@ Arduboy2Base::Arduboy2Base()
   // init not necessary, will be reset after first use
   // lastFrameStart
   // lastFrameDurationMs
+
+  sBuffer = staticAllocatedBuffer;
+  displayBuffer = NULL;
 }
 
 // functions called here should be public so users can create their
@@ -35,7 +40,9 @@ void Arduboy2Base::begin()
 {
   boot(); // raw hardware
 
-  blank(); // blank the display
+  clear();
+  display();
+  waitDisplayUpdate();
 
   flashlight(); // light the RGB LED and screen if UP button is being held.
 
@@ -887,12 +894,43 @@ void Arduboy2Base::drawCompressed(int16_t sx, int16_t sy, const uint8_t *bitmap,
 
 void Arduboy2Base::display()
 {
-  paintScreen(sBuffer);
+  uint8_t *tmp;
+
+  waitEndOfPaintScreen();
+
+  if(displayBuffer != NULL) {
+    tmp = displayBuffer;
+    displayBuffer = sBuffer;
+    sBuffer = tmp;
+    paintScreen(displayBuffer);
+  } else {
+      paintScreen(sBuffer);
+  }
 }
 
 void Arduboy2Base::display(bool clear)
 {
-  paintScreen(sBuffer, clear);
+  display();
+  if (clear) {
+    this->clear();
+  }
+}
+
+void Arduboy2Base::waitDisplayUpdate()
+{
+  waitEndOfPaintScreen();
+}
+
+void Arduboy2Base::enableDoubleBuffer()
+{
+  if(displayBuffer == NULL) {
+    displayBuffer = (uint8_t *) malloc(((HEIGHT * WIDTH) / 8) * sizeof(uint8_t));
+  }
+}
+
+bool Arduboy2Base::doubleBuffer()
+{
+  return displayBuffer != NULL;
 }
 
 uint8_t* Arduboy2Base::getBuffer()

@@ -64,7 +64,6 @@ ArduboyTones::ArduboyTones(boolean (*outEn)())
 
   toneSequence[MAX_TONES * 2] = TONES_END;
 
-
   pinMode(AUDIO_PIN, OUTPUT);
 
   NRF_TIMER2->MODE = (NRF_TIMER2->MODE & ~TIMER_MODE_MODE_Msk) | ((TIMER_MODE_MODE_Timer << TIMER_MODE_MODE_Pos) & TIMER_MODE_MODE_Msk);
