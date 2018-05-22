@@ -51,8 +51,8 @@
 
 #define BUTTON_A_PIN (5)
 #define BUTTON_B_PIN (11)
-#define BUTTON_X_PIN (1)
-#define BUTTON_Y_PIN (2)
+#define BUTTON_X_PIN (0)
+#define BUTTON_Y_PIN (1)
 #define BUTTON_UP_PIN (15)
 #define BUTTON_DOWN_PIN (14)
 #define BUTTON_LEFT_PIN (16)

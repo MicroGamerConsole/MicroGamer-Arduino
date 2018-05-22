@@ -56,7 +56,7 @@ static volatile uint16_t toneSequence[MAX_TONES * 2 + 1];
 static volatile bool inProgmem;
 
 #define AUDIO_TIMER_PRESCALER 5
-#define AUDIO_PIN 0
+#define AUDIO_PIN 2
 
 ArduboyTones::ArduboyTones(boolean (*outEn)())
 {
