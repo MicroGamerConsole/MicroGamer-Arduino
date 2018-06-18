@@ -1,11 +1,11 @@
 /**
- * @file Arduboy2Core.h
+ * @file MicroGamerCore.h
  * \brief
- * The Arduboy2Core class for Arduboy hardware initilization and control.
+ * The MicroGamerCore class for MicroGamer hardware initilization and control.
  */
 
-#ifndef ARDUBOY2_CORE_H
-#define ARDUBOY2_CORE_H
+#ifndef MICROGAMER_CORE_H
+#define MICROGAMER_CORE_H
 
 #include <Arduino.h>
 //#include <avr/power.h>
@@ -62,22 +62,22 @@
  * Lower level functions generally dealing directly with the hardware.
  *
  * \details
- * This class is inherited by Arduboy2Base and thus also Arduboy2, so wouldn't
+ * This class is inherited by MicroGamerBase and thus also MicroGamer, so wouldn't
  * normally be used directly by a sketch.
  *
  * \note
- * A friend class named _Arduboy2Ex_ is declared by this class. The intention
- * is to allow a sketch to create an _Arduboy2Ex_ class which would have access
- * to the private and protected members of the Arduboy2Core class. It is hoped
+ * A friend class named _MicroGamerEx_ is declared by this class. The intention
+ * is to allow a sketch to create an _MicroGamerEx_ class which would have access
+ * to the private and protected members of the MicroGamerCore class. It is hoped
  * that this may eliminate the need to create an entire local copy of the
  * library, in order to extend the functionality, in most circumstances.
  */
-class Arduboy2Core
+class MicroGamerCore
 {
-  friend class Arduboy2Ex;
+  friend class MicroGamerEx;
 
   public:
-    Arduboy2Core();
+    MicroGamerCore();
 
     /** \brief
      * Idle the CPU to save power.
@@ -292,7 +292,7 @@ class Arduboy2Core
                                uint8_t command3);
 
     /** \brief
-     * Initialize the Arduboy's hardware.
+     * Initialize the MicroGamer's hardware.
      *
      * \details
      * This function initializes the display, buttons, etc.
@@ -304,7 +304,7 @@ class Arduboy2Core
      * to add back in some of the start up features, if desired.
      * See the README file or documentation on the main page for more details.
      *
-     * \see Arduboy2Base::begin()
+     * \see MicroGamerBase::begin()
      */
     void static boot();
 

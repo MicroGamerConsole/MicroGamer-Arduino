@@ -1,22 +1,22 @@
 /**
- * @file Arduboy2.cpp
+ * @file MicroGamer.cpp
  * \brief
- * The Arduboy2Base and Arduboy2 classes and support objects and definitions.
+ * The MicroGamerBase and MicroGamer classes and support objects and definitions.
  */
 
-#include "Arduboy2.h"
+#include "MicroGamer.h"
 #include "ab_logo.c"
 #include "glcdfont.c"
 
-//========================================
-//========== class Arduboy2Base ==========
-//========================================
+//==========================================
+//========== class MicroGamerBase ==========
+//==========================================
 
-uint8_t Arduboy2Base::staticAllocatedBuffer[];
-uint8_t *Arduboy2Base::displayBuffer;
-uint8_t *Arduboy2Base::sBuffer;
+uint8_t MicroGamerBase::staticAllocatedBuffer[];
+uint8_t *MicroGamerBase::displayBuffer;
+uint8_t *MicroGamerBase::sBuffer;
 
-Arduboy2Base::Arduboy2Base()
+MicroGamerBase::MicroGamerBase()
 {
   currentButtonState = 0;
   previousButtonState = 0;
@@ -36,7 +36,7 @@ Arduboy2Base::Arduboy2Base()
 // functions called here should be public so users can create their
 // own init functions if they need different behavior than `begin`
 // provides by default
-void Arduboy2Base::begin()
+void MicroGamerBase::begin()
 {
   boot(); // raw hardware
 
@@ -64,7 +64,7 @@ void Arduboy2Base::begin()
   } while (buttonsState());
 }
 
-void Arduboy2Base::flashlight()
+void MicroGamerBase::flashlight()
 {
   // if (!pressed(UP_BUTTON)) {
   //   return;
@@ -83,7 +83,7 @@ void Arduboy2Base::flashlight()
   // }
 }
 
-void Arduboy2Base::systemButtons()
+void MicroGamerBase::systemButtons()
 {
   // while (pressed(B_BUTTON)) {
   //   digitalWriteRGB(BLUE_LED, RGB_ON); // turn on blue LED
@@ -95,7 +95,7 @@ void Arduboy2Base::systemButtons()
   // digitalWriteRGB(BLUE_LED, RGB_OFF); // turn off blue LED
 }
 
-void Arduboy2Base::sysCtrlSound(uint8_t buttons, uint8_t led, uint8_t eeVal)
+void MicroGamerBase::sysCtrlSound(uint8_t buttons, uint8_t led, uint8_t eeVal)
 {
   // if (pressed(buttons)) {
   //   digitalWriteRGB(BLUE_LED, RGB_OFF); // turn off blue LED
@@ -109,49 +109,49 @@ void Arduboy2Base::sysCtrlSound(uint8_t buttons, uint8_t led, uint8_t eeVal)
   // }
 }
 
-void Arduboy2Base::bootLogo()
+void MicroGamerBase::bootLogo()
 {
   bootLogoShell(drawLogoBitmap);
 }
 
-void Arduboy2Base::drawLogoBitmap(int16_t y)
+void MicroGamerBase::drawLogoBitmap(int16_t y)
 {
   drawBitmap(20, y, arduboy_logo, 88, 16);
 }
 
-void Arduboy2Base::bootLogoCompressed()
+void MicroGamerBase::bootLogoCompressed()
 {
   bootLogoShell(drawLogoCompressed);
 }
 
-void Arduboy2Base::drawLogoCompressed(int16_t y)
+void MicroGamerBase::drawLogoCompressed(int16_t y)
 {
   drawCompressed(20, y, arduboy_logo_compressed);
 }
 
-void Arduboy2Base::bootLogoSpritesSelfMasked()
+void MicroGamerBase::bootLogoSpritesSelfMasked()
 {
   bootLogoShell(drawLogoSpritesSelfMasked);
 }
 
-void Arduboy2Base::drawLogoSpritesSelfMasked(int16_t y)
+void MicroGamerBase::drawLogoSpritesSelfMasked(int16_t y)
 {
   Sprites::drawSelfMasked(20, y, arduboy_logo_sprite, 0);
 }
 
-void Arduboy2Base::bootLogoSpritesOverwrite()
+void MicroGamerBase::bootLogoSpritesOverwrite()
 {
   bootLogoShell(drawLogoSpritesOverwrite);
 }
 
-void Arduboy2Base::drawLogoSpritesOverwrite(int16_t y)
+void MicroGamerBase::drawLogoSpritesOverwrite(int16_t y)
 {
   Sprites::drawOverwrite(20, y, arduboy_logo_sprite, 0);
 }
 
 // bootLogoText() should be kept in sync with bootLogoShell()
 // if changes are made to one, equivalent changes should be made to the other
-void Arduboy2Base::bootLogoShell(void (*drawLogo)(int16_t))
+void MicroGamerBase::bootLogoShell(void (*drawLogo)(int16_t))
 {
 
   // for (int16_t y = -18; y <= 24; y++) {
@@ -176,21 +176,21 @@ void Arduboy2Base::bootLogoShell(void (*drawLogo)(int16_t))
 }
 
 // Virtual function overridden by derived class
-void Arduboy2Base::bootLogoExtra() { }
+void MicroGamerBase::bootLogoExtra() { }
 
 /* Frame management */
 
-void Arduboy2Base::setFrameRate(uint8_t rate)
+void MicroGamerBase::setFrameRate(uint8_t rate)
 {
   eachFrameMillis = 1000 / rate;
 }
 
-bool Arduboy2Base::everyXFrames(uint8_t frames)
+bool MicroGamerBase::everyXFrames(uint8_t frames)
 {
   return frameCount % frames == 0;
 }
 
-bool Arduboy2Base::nextFrame()
+bool MicroGamerBase::nextFrame()
 {
   unsigned long now = millis();
   bool tooSoonForNextFrame = now < nextFrameStart;
@@ -229,7 +229,7 @@ bool Arduboy2Base::nextFrame()
   return true;
 }
 
-bool Arduboy2Base::nextFrameDEV()
+bool MicroGamerBase::nextFrameDEV()
 {
   bool ret = nextFrame();
 
@@ -242,12 +242,12 @@ bool Arduboy2Base::nextFrameDEV()
   return ret;
 }
 
-int Arduboy2Base::cpuLoad()
+int MicroGamerBase::cpuLoad()
 {
   return lastFrameDurationMs*100 / eachFrameMillis;
 }
 
-void Arduboy2Base::initRandomSeed()
+void MicroGamerBase::initRandomSeed()
 {
   // power_adc_enable(); // ADC on
 
@@ -265,7 +265,7 @@ void Arduboy2Base::initRandomSeed()
 
 /* Graphics */
 
-void Arduboy2Base::clear()
+void MicroGamerBase::clear()
 {
   fillScreen(BLACK);
 }
@@ -278,7 +278,7 @@ void Arduboy2Base::clear()
 //   _BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7)
 // };
 
-void Arduboy2Base::drawPixel(int16_t x, int16_t y, uint8_t color)
+void MicroGamerBase::drawPixel(int16_t x, int16_t y, uint8_t color)
 {
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) {
     return;
@@ -293,14 +293,14 @@ void Arduboy2Base::drawPixel(int16_t x, int16_t y, uint8_t color)
   }
 }
 
-uint8_t Arduboy2Base::getPixel(uint8_t x, uint8_t y)
+uint8_t MicroGamerBase::getPixel(uint8_t x, uint8_t y)
 {
   uint8_t row = y / 8;
   uint8_t bit_position = y % 8;
   return (sBuffer[(row*WIDTH) + x] & bit_position) >> bit_position;
 }
 
-void Arduboy2Base::drawCircle(int16_t x0, int16_t y0, uint8_t r, uint8_t color)
+void MicroGamerBase::drawCircle(int16_t x0, int16_t y0, uint8_t r, uint8_t color)
 {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
@@ -337,7 +337,7 @@ void Arduboy2Base::drawCircle(int16_t x0, int16_t y0, uint8_t r, uint8_t color)
   }
 }
 
-void Arduboy2Base::drawCircleHelper
+void MicroGamerBase::drawCircleHelper
 (int16_t x0, int16_t y0, uint8_t r, uint8_t corners, uint8_t color)
 {
   int16_t f = 1 - r;
@@ -382,13 +382,13 @@ void Arduboy2Base::drawCircleHelper
   }
 }
 
-void Arduboy2Base::fillCircle(int16_t x0, int16_t y0, uint8_t r, uint8_t color)
+void MicroGamerBase::fillCircle(int16_t x0, int16_t y0, uint8_t r, uint8_t color)
 {
   drawFastVLine(x0, y0-r, 2*r+1, color);
   fillCircleHelper(x0, y0, r, 3, 0, color);
 }
 
-void Arduboy2Base::fillCircleHelper
+void MicroGamerBase::fillCircleHelper
 (int16_t x0, int16_t y0, uint8_t r, uint8_t sides, int16_t delta,
  uint8_t color)
 {
@@ -425,7 +425,7 @@ void Arduboy2Base::fillCircleHelper
   }
 }
 
-void Arduboy2Base::drawLine
+void MicroGamerBase::drawLine
 (int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t color)
 {
   // bresenham's algorithm - thx wikpedia
@@ -476,7 +476,7 @@ void Arduboy2Base::drawLine
   }
 }
 
-void Arduboy2Base::drawRect
+void MicroGamerBase::drawRect
 (int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t color)
 {
   drawFastHLine(x, y, w, color);
@@ -485,7 +485,7 @@ void Arduboy2Base::drawRect
   drawFastVLine(x+w-1, y, h, color);
 }
 
-void Arduboy2Base::drawFastVLine
+void MicroGamerBase::drawFastVLine
 (int16_t x, int16_t y, uint8_t h, uint8_t color)
 {
   int end = y+h;
@@ -495,7 +495,7 @@ void Arduboy2Base::drawFastVLine
   }
 }
 
-void Arduboy2Base::drawFastHLine
+void MicroGamerBase::drawFastHLine
 (int16_t x, int16_t y, uint8_t w, uint8_t color)
 {
   int16_t xEnd; // last x point + 1
@@ -546,7 +546,7 @@ void Arduboy2Base::drawFastHLine
   }
 }
 
-void Arduboy2Base::fillRect
+void MicroGamerBase::fillRect
 (int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t color)
 {
   // stupidest version - update in subclasses if desired!
@@ -556,12 +556,12 @@ void Arduboy2Base::fillRect
   }
 }
 
-void Arduboy2Base::fillScreen(uint8_t color)
+void MicroGamerBase::fillScreen(uint8_t color)
 {
     memset(sBuffer, 0, WIDTH*HEIGHT/8);
 }
 
-void Arduboy2Base::drawRoundRect
+void MicroGamerBase::drawRoundRect
 (int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t r, uint8_t color)
 {
   // smarter version
@@ -576,7 +576,7 @@ void Arduboy2Base::drawRoundRect
   drawCircleHelper(x+r, y+h-r-1, r, 8, color);
 }
 
-void Arduboy2Base::fillRoundRect
+void MicroGamerBase::fillRoundRect
 (int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t r, uint8_t color)
 {
   // smarter version
@@ -587,7 +587,7 @@ void Arduboy2Base::fillRoundRect
   fillCircleHelper(x+r, y+r, r, 2, h-2*r-1, color);
 }
 
-void Arduboy2Base::drawTriangle
+void MicroGamerBase::drawTriangle
 (int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color)
 {
   drawLine(x0, y0, x1, y1, color);
@@ -595,7 +595,7 @@ void Arduboy2Base::drawTriangle
   drawLine(x2, y2, x0, y0, color);
 }
 
-void Arduboy2Base::fillTriangle
+void MicroGamerBase::fillTriangle
 (int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color)
 {
 
@@ -698,7 +698,7 @@ void Arduboy2Base::fillTriangle
   }
 }
 
-void Arduboy2Base::drawBitmap
+void MicroGamerBase::drawBitmap
 (int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h,
  uint8_t color)
 {
@@ -743,7 +743,7 @@ void Arduboy2Base::drawBitmap
   }
 }
 
-void Arduboy2Base::drawSlowXYBitmap
+void MicroGamerBase::drawSlowXYBitmap
 (int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color)
 {
   // no need to draw at all of we're offscreen
@@ -787,7 +787,7 @@ static int getval(int bits)
   return val;
 }
 
-void Arduboy2Base::drawCompressed(int16_t sx, int16_t sy, const uint8_t *bitmap, uint8_t color)
+void MicroGamerBase::drawCompressed(int16_t sx, int16_t sy, const uint8_t *bitmap, uint8_t color)
 {
   int bl, len;
   int col;
@@ -892,7 +892,7 @@ void Arduboy2Base::drawCompressed(int16_t sx, int16_t sy, const uint8_t *bitmap,
   }
 }
 
-void Arduboy2Base::display()
+void MicroGamerBase::display()
 {
   uint8_t *tmp;
 
@@ -908,7 +908,7 @@ void Arduboy2Base::display()
   }
 }
 
-void Arduboy2Base::display(bool clear)
+void MicroGamerBase::display(bool clear)
 {
   display();
   if (clear) {
@@ -916,61 +916,61 @@ void Arduboy2Base::display(bool clear)
   }
 }
 
-void Arduboy2Base::waitDisplayUpdate()
+void MicroGamerBase::waitDisplayUpdate()
 {
   waitEndOfPaintScreen();
 }
 
-void Arduboy2Base::enableDoubleBuffer()
+void MicroGamerBase::enableDoubleBuffer()
 {
   if(displayBuffer == NULL) {
     displayBuffer = (uint8_t *) malloc(((HEIGHT * WIDTH) / 8) * sizeof(uint8_t));
   }
 }
 
-bool Arduboy2Base::doubleBuffer()
+bool MicroGamerBase::doubleBuffer()
 {
   return displayBuffer != NULL;
 }
 
-uint8_t* Arduboy2Base::getBuffer()
+uint8_t* MicroGamerBase::getBuffer()
 {
     return sBuffer;
 }
 
-bool Arduboy2Base::pressed(uint8_t buttons)
+bool MicroGamerBase::pressed(uint8_t buttons)
 {
   return (buttonsState() & buttons) == buttons;
 }
 
-bool Arduboy2Base::notPressed(uint8_t buttons)
+bool MicroGamerBase::notPressed(uint8_t buttons)
 {
   return (buttonsState() & buttons) == 0;
 }
 
-void Arduboy2Base::pollButtons()
+void MicroGamerBase::pollButtons()
 {
   previousButtonState = currentButtonState;
   currentButtonState = buttonsState();
 }
 
-bool Arduboy2Base::justPressed(uint8_t button)
+bool MicroGamerBase::justPressed(uint8_t button)
 {
   return (!(previousButtonState & button) && (currentButtonState & button));
 }
 
-bool Arduboy2Base::justReleased(uint8_t button)
+bool MicroGamerBase::justReleased(uint8_t button)
 {
   return ((previousButtonState & button) && !(currentButtonState & button));
 }
 
-bool Arduboy2Base::collide(Point point, Rect rect)
+bool MicroGamerBase::collide(Point point, Rect rect)
 {
   return ((point.x >= rect.x) && (point.x < rect.x + rect.width) &&
       (point.y >= rect.y) && (point.y < rect.y + rect.height));
 }
 
-bool Arduboy2Base::collide(Rect rect1, Rect rect2)
+bool MicroGamerBase::collide(Rect rect1, Rect rect2)
 {
   return !(rect2.x                >= rect1.x + rect1.width  ||
            rect2.x + rect2.width  <= rect1.x                ||
@@ -978,20 +978,20 @@ bool Arduboy2Base::collide(Rect rect1, Rect rect2)
            rect2.y + rect2.height <= rect1.y);
 }
 
-uint16_t Arduboy2Base::readUnitID()
+uint16_t MicroGamerBase::readUnitID()
 {
     //TODO
     return 0;
 }
 
-void Arduboy2Base::writeUnitID(uint16_t id)
+void MicroGamerBase::writeUnitID(uint16_t id)
 {
   // TODO
   // EEPROM.update(EEPROM_UNIT_ID, (uint8_t)(id & 0xff));
   // EEPROM.update(EEPROM_UNIT_ID + 1, (uint8_t)(id >> 8));
 }
 
-uint8_t Arduboy2Base::readUnitName(char* name)
+uint8_t MicroGamerBase::readUnitName(char* name)
 {
   // char val;
   // uint8_t dest;
@@ -1012,7 +1012,7 @@ uint8_t Arduboy2Base::readUnitName(char* name)
   return 0;
 }
 
-void Arduboy2Base::writeUnitName(char* name)
+void MicroGamerBase::writeUnitName(char* name)
 {
   // bool done = false;
   // uint8_t dest = EEPROM_UNIT_NAME;
@@ -1028,13 +1028,13 @@ void Arduboy2Base::writeUnitName(char* name)
   // }
 }
 
-bool Arduboy2Base::readShowUnitNameFlag()
+bool MicroGamerBase::readShowUnitNameFlag()
 {
   // return (EEPROM.read(EEPROM_SYS_FLAGS) & SYS_FLAG_UNAME_MASK);
     return 0;
 }
 
-void Arduboy2Base::writeShowUnitNameFlag(bool val)
+void MicroGamerBase::writeShowUnitNameFlag(bool val)
 {
   // uint8_t flags = EEPROM.read(EEPROM_SYS_FLAGS);
 
@@ -1042,7 +1042,7 @@ void Arduboy2Base::writeShowUnitNameFlag(bool val)
   // EEPROM.update(EEPROM_SYS_FLAGS, flags);
 }
 
-void Arduboy2Base::swap(int16_t& a, int16_t& b)
+void MicroGamerBase::swap(int16_t& a, int16_t& b)
 {
   int16_t temp = a;
   a = b;
@@ -1050,11 +1050,11 @@ void Arduboy2Base::swap(int16_t& a, int16_t& b)
 }
 
 
-//====================================
-//========== class Arduboy2 ==========
-//====================================
+//======================================
+//========== class MicroGamer ==========
+//======================================
 
-Arduboy2::Arduboy2()
+MicroGamer::MicroGamer()
 {
   cursor_x = 0;
   cursor_y = 0;
@@ -1066,7 +1066,7 @@ Arduboy2::Arduboy2()
 
 // bootLogoText() should be kept in sync with bootLogoShell()
 // if changes are made to one, equivalent changes should be made to the other
-void Arduboy2::bootLogoText()
+void MicroGamer::bootLogoText()
 {
   textSize = 2;
 
@@ -1090,7 +1090,7 @@ void Arduboy2::bootLogoText()
   bootLogoExtra();
 }
 
-void Arduboy2::bootLogoExtra()
+void MicroGamer::bootLogoExtra()
 {
   // uint8_t c;
 
@@ -1119,7 +1119,7 @@ void Arduboy2::bootLogoExtra()
   // }
 }
 
-size_t Arduboy2::write(uint8_t c)
+size_t MicroGamer::write(uint8_t c)
 {
   if (c == '\n')
   {
@@ -1144,7 +1144,7 @@ size_t Arduboy2::write(uint8_t c)
   return 1;
 }
 
-void Arduboy2::drawChar
+void MicroGamer::drawChar
   (int16_t x, int16_t y, unsigned char c, uint8_t color, uint8_t bg, uint8_t size)
 {
   uint8_t line;
@@ -1183,66 +1183,66 @@ void Arduboy2::drawChar
   }
 }
 
-void Arduboy2::setCursor(int16_t x, int16_t y)
+void MicroGamer::setCursor(int16_t x, int16_t y)
 {
   cursor_x = x;
   cursor_y = y;
 }
 
-int16_t Arduboy2::getCursorX()
+int16_t MicroGamer::getCursorX()
 {
   return cursor_x;
 }
 
-int16_t Arduboy2::getCursorY()
+int16_t MicroGamer::getCursorY()
 {
   return cursor_y;
 }
 
-void Arduboy2::setTextColor(uint8_t color)
+void MicroGamer::setTextColor(uint8_t color)
 {
   textColor = color;
 }
 
-uint8_t Arduboy2::getTextColor()
+uint8_t MicroGamer::getTextColor()
 {
   return textColor;
 }
 
-void Arduboy2::setTextBackground(uint8_t bg)
+void MicroGamer::setTextBackground(uint8_t bg)
 {
   textBackground = bg;
 }
 
-uint8_t Arduboy2::getTextBackground()
+uint8_t MicroGamer::getTextBackground()
 {
   return textBackground;
 }
 
-void Arduboy2::setTextSize(uint8_t s)
+void MicroGamer::setTextSize(uint8_t s)
 {
   // size must always be 1 or higher
   textSize = max(1, s);
 }
 
-uint8_t Arduboy2::getTextSize()
+uint8_t MicroGamer::getTextSize()
 {
   return textSize;
 }
 
-void Arduboy2::setTextWrap(bool w)
+void MicroGamer::setTextWrap(bool w)
 {
   textWrap = w;
 }
 
-bool Arduboy2::getTextWrap()
+bool MicroGamer::getTextWrap()
 {
   return textWrap;
 }
 
-void Arduboy2::clear()
+void MicroGamer::clear()
 {
-    Arduboy2Base::clear();
+    MicroGamerBase::clear();
     cursor_x = cursor_y = 0;
 }
 

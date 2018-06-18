@@ -1,15 +1,15 @@
 /**
- * @file ArduboyTones.h
+ * @file MicroGamerTones.h
  * \brief An Arduino library for playing tones and tone sequences, 
- * intended for the Arduboy game system.
+ * intended for the MicroGamer game system.
  */
 
 /*****************************************************************************
-  ArduboyTones
+  MicroGamerTones
 
 An Arduino library to play tones and tone sequences.
 
-Specifically written for use by the Arduboy miniature game system
+Specifically written for use by the MicroGamer miniature game system
 https://www.arduboy.com/
 but could work with other Arduino AVR boards that have 16 bit timer 3
 available, by changing the port and bit definintions for the pin(s)
@@ -36,8 +36,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 *****************************************************************************/
 
-#ifndef ARDUBOY_TONES_H
-#define ARDUBOY_TONES_H
+#ifndef MICROGAMER_TONES_H
+#define MICROGAMER_TONES_H
 
 #include <Arduino.h>
 
@@ -85,7 +85,7 @@ THE SOFTWARE.
 #ifndef AB_DEVKIT
   // ***** SPEAKER ON TWO PINS *****
   // Indicates that each of the speaker leads is attached to a pin, the way
-  // the Arduboy is wired. Allows tones of a higher volume to be produced.
+  // the MicroGamer is wired. Allows tones of a higher volume to be produced.
   // If commented out only one speaker pin will be used. The other speaker
   // lead should be attached to ground.
   #define TONES_2_SPEAKER_PINS
@@ -120,12 +120,12 @@ THE SOFTWARE.
 #define MAX_TONES 3
 
 #ifndef AB_DEVKIT
-  // Arduboy speaker pin 1 = Arduino pin 5 = ATmega32u4 PC6
+  // MicroGamer speaker pin 1 = Arduino pin 5 = ATmega32u4 PC6
   #define TONE_PIN_PORT PORTC
   #define TONE_PIN_DDR DDRC
   #define TONE_PIN PORTC6
   #define TONE_PIN_MASK _BV(TONE_PIN)
-  // Arduboy speaker pin 2 = Arduino pin 13 = ATmega32u4 PC7
+  // MicroGamer speaker pin 2 = Arduino pin 13 = ATmega32u4 PC7
   #define TONE_PIN2_PORT PORTC
   #define TONE_PIN2_DDR DDRC
   #define TONE_PIN2 PORTC7
@@ -146,21 +146,21 @@ THE SOFTWARE.
 
 
 /** \brief
- * The ArduboyTones class for generating tones by specifying
+ * The MicroGamerTones class for generating tones by specifying
  * frequency/duration pairs.
  */
-class ArduboyTones
+class MicroGamerTones
 {
  public:
   /** \brief
-   * The ArduboyTones class constructor.
+   * The MicroGamerTones class constructor.
    *
    * \param outEn A function which returns a boolean value of `true` if sound
    * should be played or `false` if sound should be muted. This function will
    * be called from the timer interrupt service routine, at the start of each
    * tone, so it should be as fast as possible.
    */
-  ArduboyTones(bool (*outEn)());
+  MicroGamerTones(bool (*outEn)());
 
   /** \brief
    * Play a single tone.
@@ -296,6 +296,6 @@ public:
   static void nextTone();
 };
 
-#include "ArduboyTonesPitches.h"
+#include "MicroGamerTonesPitches.h"
 
 #endif

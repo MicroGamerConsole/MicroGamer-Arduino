@@ -1,14 +1,14 @@
 #######################################
-# Syntax Coloring Map For Arduboy
+# Syntax Coloring Map For MicroGamer
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-Arduboy2	KEYWORD1
-Arduboy2Base	KEYWORD1
-Sprites	KEYWORD1
+MicroGamer      KEYWORD1
+MicroGamerBase  KEYWORD1
+Sprites 	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -108,10 +108,6 @@ drawSelfMasked	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
-ARDUBOY_LIB_VER	LITERAL1
-
-EEPROM_STORAGE_SPACE_START	LITERAL1
-
 HEIGHT	LITERAL1
 WIDTH	LITERAL1
 
@@ -123,18 +119,9 @@ CLEAR_BUFFER	LITERAL1
 
 A_BUTTON	LITERAL1
 B_BUTTON	LITERAL1
+X_BUTTON	LITERAL1
+Y_BUTTON	LITERAL1
 DOWN_BUTTON	LITERAL1
 LEFT_BUTTON	LITERAL1
 RIGHT_BUTTON	LITERAL1
 UP_BUTTON	LITERAL1
-
-PIN_SPEAKER_1	LITERAL1
-PIN_SPEAKER_2	LITERAL1
-
-BLUE_LED	LITERAL1
-GREEN_LED	LITERAL1
-RED_LED	LITERAL1
-
-RGB_OFF	LITERAL1
-RGB_ON	LITERAL1
-

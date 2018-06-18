@@ -1,7 +1,7 @@
 /**
- * @file Arduboy2Core.cpp
+ * @file MicroGamerCore.cpp
  * \brief
- * The Arduboy2Core class for Arduboy hardware initilization and control.
+ * The MicroGamerCore class for MicroGamer hardware initilization and control.
  */
 
 /*
@@ -26,7 +26,7 @@ BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
-#include "Arduboy2Core.h"
+#include "MicroGamerCore.h"
 #include <Wire.h>
 
 #define SSD1306_I2C_ADDRESS   0x3C  // 011110+SA0+RW - 0x3C or 0x3D
@@ -157,12 +157,12 @@ volatile bool twiInProgress = false;
 const uint8_t *twiTxData = NULL;
 size_t twiByteToSend = 0;
 
-Arduboy2Core::Arduboy2Core()
+MicroGamerCore::MicroGamerCore()
 {
   twiInProgress = false;
 }
 
-void Arduboy2Core::boot()
+void MicroGamerCore::boot()
 {
   bootPins();
   bootTWI();
@@ -172,7 +172,7 @@ void Arduboy2Core::boot()
 
 // Pins are set to the proper modes and levels for the specific hardware.
 // This routine must be modified if any pins are moved to a different port
-void Arduboy2Core::bootPins()
+void MicroGamerCore::bootPins()
 {
   pinMode(BUTTON_A_PIN, INPUT);
   pinMode(BUTTON_B_PIN, INPUT);
@@ -184,7 +184,7 @@ void Arduboy2Core::bootPins()
   pinMode(BUTTON_RIGHT_PIN, INPUT_PULLUP);
 }
 
-void Arduboy2Core::bootOLED()
+void MicroGamerCore::bootOLED()
 {
   // Setup reset pin direction (used by both SPI and I2C)
   pinMode(SCREEN_RESET_PIN, OUTPUT);
@@ -200,13 +200,13 @@ void Arduboy2Core::bootOLED()
   // turn on VCC (9V?)
 
   // run our customized boot-up command sequence against the
-  // OLED to initialize it properly for Arduboy
+  // OLED to initialize it properly for MicroGamer
   for (uint8_t i = 0; i < sizeof(lcdBootProgram); i++) {
     sendLCDCommand(pgm_read_byte(lcdBootProgram + i));
   }
 }
 
-void Arduboy2Core::bootTWI()
+void MicroGamerCore::bootTWI()
 {
   TWI_DEVICE->EVENTS_TXDSENT = 0;
   TWI_DEVICE->EVENTS_STOPPED = 0;
@@ -225,7 +225,7 @@ void Arduboy2Core::bootTWI()
 
 /* TWI  */
 
-void Arduboy2Core::twiBeginTransmission(uint8_t address)
+void MicroGamerCore::twiBeginTransmission(uint8_t address)
 {
   TWI_DEVICE->ADDRESS = address;
   TWI_DEVICE->SHORTS = 0x0UL;
@@ -233,7 +233,7 @@ void Arduboy2Core::twiBeginTransmission(uint8_t address)
   TWI_DEVICE->TASKS_STARTTX = 0x1UL;
 }
 
-uint8_t Arduboy2Core::twiTransmit(const uint8_t data[],
+uint8_t MicroGamerCore::twiTransmit(const uint8_t data[],
                                   size_t quantity)
 {
   for(size_t i = 0; i < quantity; ++i)
@@ -275,7 +275,7 @@ uint8_t Arduboy2Core::twiTransmit(const uint8_t data[],
   return 0;
 }
 
-void Arduboy2Core::twiTransmitAsync(const uint8_t data[],
+void MicroGamerCore::twiTransmitAsync(const uint8_t data[],
                                        size_t quantity)
 {
 
@@ -295,12 +295,12 @@ void Arduboy2Core::twiTransmitAsync(const uint8_t data[],
   TWI_DEVICE->TXD = data[0];
 }
 
-uint8_t Arduboy2Core::twiTransmit(uint8_t data)
+uint8_t MicroGamerCore::twiTransmit(uint8_t data)
 {
     twiTransmit(&data, 1);
 }
 
-uint8_t Arduboy2Core::twiEndTransmission()
+uint8_t MicroGamerCore::twiEndTransmission()
 {
   TWI_DEVICE->TASKS_STOP = 0x1UL;
   while(!TWI_DEVICE->EVENTS_STOPPED);
@@ -374,13 +374,13 @@ void SPI1_TWI1_IRQHandler(void)
 
 /* Power Management */
 
-void Arduboy2Core::idle()
+void MicroGamerCore::idle()
 {
   // set_sleep_mode(SLEEP_MODE_IDLE);
   // sleep_mode();
 }
 
-void Arduboy2Core::bootPowerSaving()
+void MicroGamerCore::bootPowerSaving()
 {
   // // disable Two Wire Interface (I2C) and the ADC
   // PRR0 = _BV(PRTWI) | _BV(PRADC);
@@ -390,7 +390,7 @@ void Arduboy2Core::bootPowerSaving()
 }
 
 // Shut down the display
-void Arduboy2Core::displayOff()
+void MicroGamerCore::displayOff()
 {
   sendLCDCommand(0xAE,  // display off
                  0x8D,  // charge pump:
@@ -399,19 +399,19 @@ void Arduboy2Core::displayOff()
 }
 
 // Restart the display after a displayOff()
-void Arduboy2Core::displayOn()
+void MicroGamerCore::displayOn()
 {
   bootOLED();
 }
 
-uint8_t Arduboy2Core::width() { return WIDTH; }
+uint8_t MicroGamerCore::width() { return WIDTH; }
 
-uint8_t Arduboy2Core::height() { return HEIGHT; }
+uint8_t MicroGamerCore::height() { return HEIGHT; }
 
 
 /* Drawing */
 
-void Arduboy2Core::paintScreen(const uint8_t *image)
+void MicroGamerCore::paintScreen(const uint8_t *image)
 {
   waitEndOfPaintScreen();
 
@@ -428,19 +428,19 @@ void Arduboy2Core::paintScreen(const uint8_t *image)
   twiTransmitAsync(image, SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8);
 }
 
-bool Arduboy2Core::paintScreenInProgress()
+bool MicroGamerCore::paintScreenInProgress()
 {
     return twiInProgress;
 }
 
-void Arduboy2Core::waitEndOfPaintScreen()
+void MicroGamerCore::waitEndOfPaintScreen()
 {
   while (twiInProgress) {
     idle();
   }
 }
 
-void Arduboy2Core::sendLCDCommand(uint8_t command)
+void MicroGamerCore::sendLCDCommand(uint8_t command)
 {
   uint8_t data[2] = {0x00,  // Co = 0, D/C = 0
                      command};
@@ -449,7 +449,7 @@ void Arduboy2Core::sendLCDCommand(uint8_t command)
   twiEndTransmission();
 }
 
-void Arduboy2Core::sendLCDCommand(uint8_t command,
+void MicroGamerCore::sendLCDCommand(uint8_t command,
                                   uint8_t command2)
 {
   uint8_t data[3] = {0x00,  // Co = 0, D/C = 0
@@ -460,7 +460,7 @@ void Arduboy2Core::sendLCDCommand(uint8_t command,
   twiEndTransmission();
 }
 
-void Arduboy2Core::sendLCDCommand(uint8_t command,
+void MicroGamerCore::sendLCDCommand(uint8_t command,
                                   uint8_t command2,
                                   uint8_t command3)
 {
@@ -475,33 +475,33 @@ void Arduboy2Core::sendLCDCommand(uint8_t command,
 
 // invert the display or set to normal
 // when inverted, a pixel set to 0 will be on
-void Arduboy2Core::invert(bool inverse)
+void MicroGamerCore::invert(bool inverse)
 {
   sendLCDCommand(inverse ? OLED_PIXELS_INVERTED : OLED_PIXELS_NORMAL);
 }
 
 // turn all display pixels on, ignoring buffer contents
 // or set to normal buffer display
-void Arduboy2Core::allPixelsOn(bool on)
+void MicroGamerCore::allPixelsOn(bool on)
 {
   sendLCDCommand(on ? OLED_ALL_PIXELS_ON : OLED_PIXELS_FROM_RAM);
 }
 
 // flip the display vertically or set to normal
-void Arduboy2Core::flipVertical(bool flipped)
+void MicroGamerCore::flipVertical(bool flipped)
 {
   sendLCDCommand(flipped ? OLED_VERTICAL_NORMAL: OLED_VERTICAL_FLIPPED);
 }
 
 // flip the display horizontally or set to normal
-void Arduboy2Core::flipHorizontal(bool flipped)
+void MicroGamerCore::flipHorizontal(bool flipped)
 {
   sendLCDCommand(flipped ? OLED_HORIZ_NORMAL: OLED_HORIZ_FLIPPED);
 }
 
 /* Buttons */
 
-uint8_t Arduboy2Core::buttonsState()
+uint8_t MicroGamerCore::buttonsState()
 {
   uint8_t buttons = 0;
 
@@ -528,7 +528,7 @@ uint8_t Arduboy2Core::buttonsState()
 }
 
 // delay in ms with 16 bit duration
-void Arduboy2Core::delayShort(uint16_t ms)
+void MicroGamerCore::delayShort(uint16_t ms)
 {
   delay((unsigned long) ms);
 }

@@ -1,11 +1,11 @@
 /**
- * @file Arduboy2Audio.h
+ * @file MicroGamerAudio.h
  * \brief
- * The Arduboy2Audio class for speaker and sound control.
+ * The MicroGamerAudio class for speaker and sound control.
  */
 
-#ifndef ARDUBOY2_AUDIO_H
-#define ARDUBOY2_AUDIO_H
+#ifndef MICROGAMER_AUDIO_H
+#define MICROGAMER_AUDIO_H
 
 #include <Arduino.h>
 //#include <EEPROM.h>
@@ -21,19 +21,19 @@
  * The state of sound muting is stored in system EEPROM and so is retained
  * over power cycles.
  *
- * An Arduboy2Audio class object named `audio` will be created by the
- * Arduboy2Base class, so there is no need for a sketch itself to create an
- * Arduboy2Audio object. Arduboy2Audio functions can be called using the
- * Arduboy2 or Arduboy2Base `audio` object.
+ * An MicroGamerAudio class object named `audio` will be created by the
+ * MicroGamerBase class, so there is no need for a sketch itself to create an
+ * MicroGamerAudio object. MicroGamerAudio functions can be called using the
+ * MicroGamer or MicroGamerBase `audio` object.
  *
  * Example:
  *
  * \code
- * #include <Arduboy2.h>
+ * #include <MicroGamer.h>
  *
- * Arduboy2 arduboy;
+ * MicroGamer arduboy;
  *
- * // Arduboy2Audio functions can be called as follows:
+ * // MicroGamerAudio functions can be called as follows:
  *   arduboy.audio.on();
  *   arduboy.audio.off();
  * \endcode
@@ -53,26 +53,26 @@
  * like so:
  *
  * \code
- * #include <Arduboy2.h>
+ * #include <MicroGamer.h>
  * #include <ArduboyTones.h>
  *
- * Arduboy2 arduboy;
+ * MicroGamer arduboy;
  * ArduboyTones sound(arduboy.audio.enabled);
  * \endcode
  * \endparblock
  *
  * \note
  * \parblock
- * A friend class named _Arduboy2Ex_ is declared by this class. The intention
- * is to allow a sketch to create an _Arduboy2Ex_ class which would have access
- * to the private and protected members of the Arduboy2Audio class. It is hoped
+ * A friend class named _MicroGamerEx_ is declared by this class. The intention
+ * is to allow a sketch to create an _MicroGamerEx_ class which would have access
+ * to the private and protected members of the MicroGamerAudio class. It is hoped
  * that this may eliminate the need to create an entire local copy of the
  * library, in order to extend the functionality, in most circumstances.
  * \endparblock
  */
-class Arduboy2Audio
+class MicroGamerAudio
 {
- friend class Arduboy2Ex;
+ friend class MicroGamerEx;
 
  public:
   /** \brief
@@ -80,9 +80,9 @@ class Arduboy2Audio
    *
    * \details
    * The speaker is initialized based on the current mute setting saved in
-   * system EEPROM. This function is called by `Arduboy2Base::begin()` so it
+   * system EEPROM. This function is called by `MicroGamerBase::begin()` so it
    * isn't normally required to call it within a sketch. However, if
-   * `Arduboy2Core::boot()` is used instead of `Arduboy2Base::begin()` and the
+   * `MicroGamerCore::boot()` is used instead of `MicroGamerBase::begin()` and the
    * sketch includes sound, then this function should be called after `boot()`.
    */
   void static begin();

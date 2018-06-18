@@ -1,15 +1,15 @@
 /**
- * @file ArduboyTones.cpp
+ * @file MicroGamerTones.cpp
  * \brief An Arduino library for playing tones and tone sequences, 
- * intended for the Arduboy game system.
+ * intended for the MicroGamer game system.
  */
 
 /*****************************************************************************
-  ArduboyTones
+  MicroGamerTones
 
 An Arduino library to play tones and tone sequences.
 
-Specifically written for use by the Arduboy miniature game system
+Specifically written for use by the MicroGamer miniature game system
 https://www.arduboy.com/
 but could work with other Arduino AVR boards that have 16 bit timer 3
 available, by changing the port and bit definintions for the pin(s)
@@ -36,7 +36,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 *****************************************************************************/
 
-#include "ArduboyTones.h"
+#include "MicroGamerTones.h"
 
 // pointer to a function that indicates if sound is enabled
 static bool (*outputEnabled)();
@@ -58,7 +58,7 @@ static volatile bool inProgmem;
 #define AUDIO_TIMER_PRESCALER 5
 #define AUDIO_PIN 2
 
-ArduboyTones::ArduboyTones(boolean (*outEn)())
+MicroGamerTones::MicroGamerTones(boolean (*outEn)())
 {
   outputEnabled = outEn;
 
@@ -92,7 +92,7 @@ ArduboyTones::ArduboyTones(boolean (*outEn)())
   NRF_TIMER2->INTENSET = TIMER_INTENSET_COMPARE0_Set << TIMER_INTENSET_COMPARE0_Pos;
 }
 
-void ArduboyTones::tone(uint16_t freq, uint16_t dur)
+void MicroGamerTones::tone(uint16_t freq, uint16_t dur)
 {
   stopTimer();
 
@@ -104,7 +104,7 @@ void ArduboyTones::tone(uint16_t freq, uint16_t dur)
   nextTone(); // start playing
 }
 
-void ArduboyTones::tone(uint16_t freq1, uint16_t dur1,
+void MicroGamerTones::tone(uint16_t freq1, uint16_t dur1,
                         uint16_t freq2, uint16_t dur2)
 {
   stopTimer();
@@ -119,7 +119,7 @@ void ArduboyTones::tone(uint16_t freq1, uint16_t dur1,
   nextTone(); // start playing
 }
 
-void ArduboyTones::tone(uint16_t freq1, uint16_t dur1,
+void MicroGamerTones::tone(uint16_t freq1, uint16_t dur1,
                         uint16_t freq2, uint16_t dur2,
                         uint16_t freq3, uint16_t dur3)
 {
@@ -137,7 +137,7 @@ void ArduboyTones::tone(uint16_t freq1, uint16_t dur1,
   nextTone(); // start playing
 }
 
-void ArduboyTones::tones(const uint16_t *tones)
+void MicroGamerTones::tones(const uint16_t *tones)
 {
   stopTimer();
 
@@ -146,7 +146,7 @@ void ArduboyTones::tones(const uint16_t *tones)
   nextTone(); // start playing
 }
 
-void ArduboyTones::tonesInRAM(uint16_t *tones)
+void MicroGamerTones::tonesInRAM(uint16_t *tones)
 {
   stopTimer();
 
@@ -155,23 +155,23 @@ void ArduboyTones::tonesInRAM(uint16_t *tones)
   nextTone(); // start playing
 }
 
-void ArduboyTones::noTone()
+void MicroGamerTones::noTone()
 {
   stopTimer();
   tonesPlaying = false;
 }
 
-void ArduboyTones::volumeMode(uint8_t mode)
+void MicroGamerTones::volumeMode(uint8_t mode)
 {
   //  There's no volume mode on the Micro:Gamer
 }
 
-bool ArduboyTones::playing()
+bool MicroGamerTones::playing()
 {
   return tonesPlaying;
 }
 
-void ArduboyTones::nextTone()
+void MicroGamerTones::nextTone()
 {
   uint16_t freq;
   uint16_t dur;
@@ -231,7 +231,7 @@ void ArduboyTones::nextTone()
   startTimer();
 }
 
-uint16_t ArduboyTones::getNext()
+uint16_t MicroGamerTones::getNext()
 {
   if (inProgmem) {
     return pgm_read_word(tonesIndex++);
@@ -239,12 +239,12 @@ uint16_t ArduboyTones::getNext()
   return *tonesIndex++;
 }
 
-void ArduboyTones::stopTimer()
+void MicroGamerTones::stopTimer()
 {
     NRF_TIMER2->TASKS_STOP = 0x1UL;    
 }
 
-void ArduboyTones::startTimer()
+void MicroGamerTones::startTimer()
 {
     NRF_TIMER2->TASKS_START = 0x1UL;    
 }
@@ -271,7 +271,7 @@ void TIMER2_IRQHandler(void)
     durationCount--;
   }
   else {
-    ArduboyTones::nextTone();
+    MicroGamerTones::nextTone();
   }
 }
 

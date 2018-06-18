@@ -1,15 +1,15 @@
 /**
- * @file Arduboy2.h
+ * @file MicroGamer.h
  * \brief
- * The Arduboy2Base and Arduboy2 classes and support objects and definitions.
+ * The MicroGamerBase and MicroGamer classes and support objects and definitions.
  */
 
-#ifndef ARDUBOY2_H
-#define ARDUBOY2_H
+#ifndef MICROGAMER_H
+#define MICROGAMER_H
 
 #include <Arduino.h>
 //#include <EEPROM.h>
-#include "Arduboy2Core.h"
+#include "MicroGamerCore.h"
 #include "Sprites.h"
 #include <Print.h>
 #include <limits.h>
@@ -60,7 +60,7 @@
 #define EEPROM_STORAGE_SPACE_START 16
 
 // eeprom settings above are neded for audio
-#include "Arduboy2Audio.h"
+#include "MicroGamerAudio.h"
 
 // If defined, it is safe to draw outside of the screen boundaries.
 // Pixels that would exceed the display limits will be ignored.
@@ -78,7 +78,7 @@
  * BLACK pixels will become WHITE and WHITE will become BLACK.
  *
  * \note
- * Only function Arduboy2Base::drawBitmap() currently supports this value.
+ * Only function MicroGamerBase::drawBitmap() currently supports this value.
  */
 #define INVERT 2
 
@@ -92,7 +92,7 @@
  * The X and Y coordinates specify the top left corner of a rectangle with the
  * given width and height.
  *
- * \see Arduboy2Base::collide(Point, Rect) Arduboy2Base::collide(Rect, Rect)
+ * \see MicroGamerBase::collide(Point, Rect) MicroGamerBase::collide(Rect, Rect)
  */
 struct Rect
 {
@@ -108,7 +108,7 @@ struct Rect
  * \details
  * The location of the point is given by X and Y coordinates.
  *
- * \see Arduboy2Base::collide(Point, Rect)
+ * \see MicroGamerBase::collide(Point, Rect)
  */
 struct Point
 {
@@ -116,33 +116,33 @@ struct Point
   int16_t y; /**< The Y coordinate of the point */
 };
 
-//==================================
-//========== Arduboy2Base ==========
-//==================================
+//====================================
+//========== MicroGamerBase ==========
+//====================================
 
 /** \brief
- * The main functions provided for writing sketches for the Arduboy,
+ * The main functions provided for writing sketches for the MicroGamer,
  * _minus_ text output.
  *
  * \details
- * This class in inherited by Arduboy2, so if text output functions are
- * required Arduboy2 should be used instead.
+ * This class in inherited by MicroGamer, so if text output functions are
+ * required MicroGamer should be used instead.
  *
  * \note
  * \parblock
- * An Arduboy2Audio class object named `audio` will be created by the
- * Arduboy2Base class, so there is no need for a sketch itself to create an
- * Arduboy2Audio object. Arduboy2Audio functions can be called using the
- * Arduboy2 or Arduboy2Base `audio` object.
+ * An MicroGamerAudio class object named `audio` will be created by the
+ * MicroGamerBase class, so there is no need for a sketch itself to create an
+ * MicroGamerAudio object. MicroGamerAudio functions can be called using the
+ * MicroGamer or MicroGamerBase `audio` object.
  *
  * Example:
  *
  * \code
- * #include <Arduboy2.h>
+ * #include <MicroGamer.h>
  *
- * Arduboy2 arduboy;
+ * MicroGamer arduboy;
  *
- * // Arduboy2Audio functions can be called as follows:
+ * // MicroGamerAudio functions can be called as follows:
  *   arduboy.audio.on();
  *   arduboy.audio.off();
  * \endcode
@@ -150,32 +150,32 @@ struct Point
  *
  * \note
  * \parblock
- * A friend class named _Arduboy2Ex_ is declared by this class. The intention
- * is to allow a sketch to create an _Arduboy2Ex_ class which would have access
- * to the private and protected members of the Arduboy2Base class. It is hoped
+ * A friend class named _MicroGamerEx_ is declared by this class. The intention
+ * is to allow a sketch to create an _MicroGamerEx_ class which would have access
+ * to the private and protected members of the MicroGamerBase class. It is hoped
  * that this may eliminate the need to create an entire local copy of the
  * library, in order to extend the functionality, in most circumstances.
  * \endparblock
  *
- * \see Arduboy2
+ * \see MicroGamer
  */
-class Arduboy2Base : public Arduboy2Core
+class MicroGamerBase : public MicroGamerCore
 {
- friend class Arduboy2Ex;
+ friend class MicroGamerEx;
 
  public:
-  Arduboy2Base();
+  MicroGamerBase();
 
   /** \brief
    * An object created to provide audio control functions within this class.
    *
    * \details
    * This object is created to eliminate the need for a sketch to create an
-   * Arduboy2Audio class object itself.
+   * MicroGamerAudio class object itself.
    *
-   * \see Arduboy2Audio
+   * \see MicroGamerAudio
    */
-  Arduboy2Audio audio;
+  MicroGamerAudio audio;
 
   /** \brief
    * Initialize the hardware, display the boot logo, provide boot utilities, etc.
@@ -201,7 +201,7 @@ class Arduboy2Base : public Arduboy2Core
    * \details
    * Checks if the UP button is pressed and if so turns the RGB LED and all
    * display pixels fully on. If the UP button is detected, this function
-   * does not exit. The Arduboy must be restarted after flashlight mode is used.
+   * does not exit. The MicroGamer must be restarted after flashlight mode is used.
    *
    * This function is called by `begin()` and can be called by a sketch
    * after `boot()`.
@@ -248,7 +248,7 @@ class Arduboy2Base : public Arduboy2Core
    * This function is called by `begin()` and can be called by a sketch
    * after `boot()`.
    *
-   * The Arduboy logo scrolls down from the top of the screen to the center
+   * The MicroGamer logo scrolls down from the top of the screen to the center
    * while the RGB LEDs light in sequence.
    *
    * If the RIGHT button is pressed while the logo is scrolling down,
@@ -258,10 +258,10 @@ class Arduboy2Base : public Arduboy2Core
    *
    * This function calls `bootLogoExtra()` after the logo stops scrolling down,
    * which derived classes can implement to add additional information to the
-   * logo screen. The `Arduboy2` class uses this to display the unit name.
+   * logo screen. The `MicroGamer` class uses this to display the unit name.
    *
-   * \see begin() boot() Arduboy2::bootLogoExtra() bootLogoShell()
-   * Arduboy2::bootLogoText()
+   * \see begin() boot() MicroGamer::bootLogoExtra() bootLogoShell()
+   * MicroGamer::bootLogoText()
    */
   void bootLogo();
 
@@ -1028,7 +1028,7 @@ class Arduboy2Base : public Arduboy2Core
    * unitNameLength = arduboy.readUnitName(unitName);
    * \endcode
    *
-   * \see writeUnitName() readUnitID() Arduboy2::bootLogoExtra()
+   * \see writeUnitName() readUnitID() MicroGamer::bootLogoExtra()
    */
   uint8_t readUnitName(char* name);
 
@@ -1054,7 +1054,7 @@ class Arduboy2Base : public Arduboy2Core
    * Sketches can use the defined value `ARDUBOY_UNIT_NAME_LEN` instead of
    * hard coding a 6 when working with the unit name.
    *
-   * \see readUnitName() writeUnitID() Arduboy2::bootLogoExtra()
+   * \see readUnitName() writeUnitID() MicroGamer::bootLogoExtra()
    */
   void writeUnitName(char* name);
 
@@ -1070,7 +1070,7 @@ class Arduboy2Base : public Arduboy2Core
    * This function returns the value of this flag.
    *
    * \see writeShowUnitNameFlag() writeUnitName() readUnitName()
-   * Arduboy2::bootLogoExtra()
+   * MicroGamer::bootLogoExtra()
    */
   bool readShowUnitNameFlag();
 
@@ -1086,7 +1086,7 @@ class Arduboy2Base : public Arduboy2Core
    * This function allows the flag to be saved with the desired value.
    *
    * \see readShowUnitNameFlag() writeUnitName() readUnitName()
-   * Arduboy2::bootLogoExtra()
+   * MicroGamer::bootLogoExtra()
    */
   void writeShowUnitNameFlag(bool val);
 
@@ -1169,33 +1169,33 @@ class Arduboy2Base : public Arduboy2Core
 };
 
 
-//==============================
-//========== Arduboy2 ==========
-//==============================
+//================================
+//========== MicroGamer ==========
+//================================
 
 /** \brief
- * The main functions provided for writing sketches for the Arduboy,
+ * The main functions provided for writing sketches for the MicroGamer,
  * _including_ text output.
  *
  * \details
- * This class is derived from Arduboy2Base. It provides text output functions
- * in addition to all the functions inherited from Arduboy2Base.
+ * This class is derived from MicroGamerBase. It provides text output functions
+ * in addition to all the functions inherited from MicroGamerBase.
  *
  * \note
- * A friend class named _Arduboy2Ex_ is declared by this class. The intention
- * is to allow a sketch to create an _Arduboy2Ex_ class which would have access
- * to the private and protected members of the Arduboy2 class. It is hoped
+ * A friend class named _MicroGamerEx_ is declared by this class. The intention
+ * is to allow a sketch to create an _MicroGamerEx_ class which would have access
+ * to the private and protected members of the MicroGamer class. It is hoped
  * that this may eliminate the need to create an entire local copy of the
  * library, in order to extend the functionality, in most circumstances.
  *
- * \see Arduboy2Base
+ * \see MicroGamerBase
  */
-class Arduboy2 : public Print, public Arduboy2Base
+class MicroGamer : public Print, public MicroGamerBase
 {
- friend class Arduboy2Ex;
+ friend class MicroGamerEx;
 
  public:
-  Arduboy2();
+  MicroGamer();
 
   /** \class Print
    * \brief
@@ -1203,7 +1203,7 @@ class Arduboy2 : public Print, public Arduboy2Base
    * buffer.
    *
    * \details
-   * For an `Arduboy2` class object, functions provided by the Arduino `Print`
+   * For an `MicroGamer` class object, functions provided by the Arduino `Print`
    * class can be used to write text to the screen buffer, in the same manner
    * as the Arduino `Serial.print()`, etc., functions.
    *
@@ -1224,7 +1224,7 @@ class Arduboy2 : public Print, public Arduboy2Base
    * arduboy.print(78, HEX) // Prints "4E" (78 in hexadecimal)
    * \endcode
    *
-   * \see Arduboy2::write()
+   * \see MicroGamer::write()
    */
 
   /** \brief
@@ -1234,7 +1234,7 @@ class Arduboy2 : public Print, public Arduboy2Base
    * This function can be called by a sketch after `boot()` as an alternative
    * to `bootLogo()`.
    *
-   * The Arduboy logo scrolls down from the top of the screen to the center
+   * The MicroGamer logo scrolls down from the top of the screen to the center
    * while the RGB LEDs light in sequence.
    *
    * This function is the same as `bootLogo()` except the logo is printed as
@@ -1243,7 +1243,7 @@ class Arduboy2 : public Print, public Arduboy2Base
    * to display text. However, the logo will not look as good when printed as
    * text as it does with the bitmap used by `bootLogo()`.
    *
-   * \see bootLogo() boot() Arduboy2::bootLogoExtra()
+   * \see bootLogo() boot() MicroGamer::bootLogoExtra()
    */
   void bootLogoText();
 
@@ -1276,7 +1276,7 @@ class Arduboy2 : public Print, public Arduboy2Base
    * \return The number of characters written (will always be 1).
    *
    * \details
-   * This is the Arduboy implemetation of the Arduino virtual `write()`
+   * This is the MicroGamer implemetation of the Arduino virtual `write()`
    * function. The single ASCII character specified is written to the
    * the screen buffer at the current text cursor. The text cursor is then
    * moved to the next character position in the screen buffer. This new cursor

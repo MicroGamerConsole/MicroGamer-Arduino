@@ -1,12 +1,12 @@
 /**
- * @file ArduboyTonesPitches.h
+ * @file MicroGamerTonesPitches.h
  * \brief Frequency definitions for standard note pitches.
  */
 
 // Definitions ending with "H" indicate high volume
 
-#ifndef ARDUBOY_TONES_PITCHES_H
-#define ARDUBOY_TONES_PITCHES_H
+#ifndef MICROGAMER_TONES_PITCHES_H
+#define MICROGAMER_TONES_PITCHES_H
 
 #define NOTE_REST 0
 #define NOTE_C0  16

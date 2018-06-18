@@ -1,23 +1,32 @@
-#include "Arduboy2.h"
+#include "MicroGamer.h"
 #include <MicroGamerMemoryCard.h>
 
 MicroGamerMemoryCard mem(1);
-Arduboy2 mg;
+MicroGamer mg;
 
 void setup() {
   mg.boot();
+  mg.setFrameRate(30);
 }
 
 void loop() {
-  unsigned int *ptr =(unsigned int *)mem.data();
+//  unsigned int *ptr = (unsigned int *)mem.data();
+
+  if (!mg.nextFrame()) {
+    return; // go back to the start of the loop
+  }
 
   mg.clear();
+  mg.drawLine(0, 0, WIDTH - 1, HEIGHT - 1);
+  mg.drawLine(WIDTH - 1, 0, 0, HEIGHT - 1);
   mg.setCursor(0, 0);
-  mg.print("Data: 0x");
-  mg.print(*ptr, HEX);
+  mg.println("Data: 0x");
+  //mg.print(*ptr, HEX);
   mg.print("\n");
   mg.print("RAM Addr: 0x");
-  mg.print((unsigned int)ptr, HEX);
+  mg.drawLine(5, 0, WIDTH - 5, HEIGHT - 1);
+  mg.drawLine(WIDTH - 5, 0, 5, HEIGHT - 1);
+  //mg.print((unsigned int)ptr, HEX);
   mg.print("\n");
   mg.println("Press:");
   mg.println(" - UP to increment");
@@ -26,15 +35,15 @@ void loop() {
   mg.println(" - B to save the data");
   mg.display();
 
-  if (mg.pressed(UP_BUTTON)) {
-    (*ptr)++;
-  } else if (mg.pressed(DOWN_BUTTON)){
-    (*ptr)--;
-  }
-
-  if (mg.pressed(A_BUTTON)) {
-    mem.load();
-  } else if (mg.pressed(B_BUTTON)){
-    mem.save();
-  }
+//  if (mg.pressed(UP_BUTTON)) {
+//    (*ptr)++;
+//  } else if (mg.pressed(DOWN_BUTTON)){
+//    (*ptr)--;
+//  }
+//
+//  if (mg.pressed(A_BUTTON)) {
+//    mem.load();
+//  } else if (mg.pressed(B_BUTTON)){
+//    mem.save();
+//  }
 }
