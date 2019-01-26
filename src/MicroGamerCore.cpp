@@ -517,11 +517,17 @@ uint8_t MicroGamerCore::buttonsState()
   if (! digitalRead(BUTTON_DOWN_PIN)) {
       buttons |= DOWN_BUTTON;
   }
-  if (! digitalRead(BUTTON_Y_PIN)) {
+  if (! digitalRead(BUTTON_A_PIN)) {
       buttons |= A_BUTTON;
   }
-  if (! digitalRead(BUTTON_X_PIN)) {
+  if (! digitalRead(BUTTON_B_PIN)) {
       buttons |= B_BUTTON;
+  }
+  if (! digitalRead(BUTTON_Y_PIN)) {
+      buttons |= Y_BUTTON;
+  }
+  if (! digitalRead(BUTTON_X_PIN)) {
+      buttons |= X_BUTTON;
   }
 
   return buttons;

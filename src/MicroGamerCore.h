@@ -22,6 +22,8 @@
 #define DOWN_BUTTON (1<<4)  /**< The Down button value for functions requiring a bitmask */
 #define A_BUTTON (1<<5)     /**< The A button value for functions requiring a bitmask */
 #define B_BUTTON (1<<6)     /**< The B button value for functions requiring a bitmask */
+#define Y_BUTTON (1<<5)     /**< The Y button value for functions requiring a bitmask */
+#define X_BUTTON (1<<6)     /**< The X button value for functions requiring a bitmask */
 
 // --------------------
 
@@ -153,7 +155,8 @@ class MicroGamerCore
      *
      * The following defined mask values should be used for the buttons:
      *
-     * LEFT_BUTTON, RIGHT_BUTTON, UP_BUTTON, DOWN_BUTTON, A_BUTTON, B_BUTTON
+     * LEFT_BUTTON, RIGHT_BUTTON, UP_BUTTON, DOWN_BUTTON, A_BUTTON, B_BUTTON,
+     * Y_BUTTON, X_BUTTON
      */
     uint8_t static buttonsState();
 
