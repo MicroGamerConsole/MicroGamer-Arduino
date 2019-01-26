@@ -1,4 +1,4 @@
-# Micro:Gamer Arduino Library
+# [Micro:Gamer](https://hackaday.io/project/47760-microgamer) Arduino Library
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/MicroGamerConsole/Lobby)
 
@@ -6,7 +6,7 @@ The Micro:Gamer Arduino library is maintained in a git repository hosted on [Git
 
 https://github.com/MicroGamerConsole/MicroGamer-Arduino
 
-The Micro:Gamer Arduino library is a fork of the [Arduboy2 library](), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the Micro:Gamer miniature game system.
+The Micro:Gamer Arduino library is a fork of the [Arduboy2 library](), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the [Micro:Gamer](https://hackaday.io/project/47760-microgamer) miniature game system.
 
 ## Library documentation
 
