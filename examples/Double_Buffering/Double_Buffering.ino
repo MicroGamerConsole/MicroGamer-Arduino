@@ -1,6 +1,6 @@
-#include <Arduboy2.h>
+#include <MicroGamer.h>
 
-Arduboy2 mg;
+MicroGamer mg;
 
 void setup() {
   mg.boot();
@@ -10,7 +10,8 @@ void setup() {
 void loop() {
   mg.setCursor(0, 0);
   if ( ! mg.doubleBuffer()) {
-    mg.println("Some text that glitches");
+    mg.println("Some text that");
+    mg.println("glitches");
     mg.println("because double buffer");
     mg.println("is not enabled");
     mg.println("==============="); 
@@ -34,7 +35,7 @@ void loop() {
   // no glitch.
   mg.clear();
 
-  if (mg.pressed(A_BUTTON)) {
+  if (mg.pressed(Y_BUTTON)) {
     mg.enableDoubleBuffer();
   }
 }
