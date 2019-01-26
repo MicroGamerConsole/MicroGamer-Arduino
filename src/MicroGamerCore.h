@@ -16,14 +16,14 @@
 
 // bit values for button states
 // these are determined by the buttonsState() function
-#define LEFT_BUTTON (1<<1)  /**< The Left button value for functions requiring a bitmask */
-#define RIGHT_BUTTON (1<<2) /**< The Right button value for functions requiring a bitmask */
-#define UP_BUTTON (1<<3)    /**< The Up button value for functions requiring a bitmask */
-#define DOWN_BUTTON (1<<4)  /**< The Down button value for functions requiring a bitmask */
-#define A_BUTTON (1<<5)     /**< The A button value for functions requiring a bitmask */
-#define B_BUTTON (1<<6)     /**< The B button value for functions requiring a bitmask */
-#define Y_BUTTON (1<<5)     /**< The Y button value for functions requiring a bitmask */
-#define X_BUTTON (1<<6)     /**< The X button value for functions requiring a bitmask */
+#define LEFT_BUTTON (1<<0)  /**< The Left button value for functions requiring a bitmask */
+#define RIGHT_BUTTON (1<<1) /**< The Right button value for functions requiring a bitmask */
+#define UP_BUTTON (1<<2)    /**< The Up button value for functions requiring a bitmask */
+#define DOWN_BUTTON (1<<3)  /**< The Down button value for functions requiring a bitmask */
+#define A_BUTTON (1<<4)     /**< The A button value for functions requiring a bitmask */
+#define B_BUTTON (1<<5)     /**< The B button value for functions requiring a bitmask */
+#define Y_BUTTON (1<<6)     /**< The Y button value for functions requiring a bitmask */
+#define X_BUTTON (1<<7)     /**< The X button value for functions requiring a bitmask */
 
 // --------------------
 
