@@ -558,7 +558,7 @@ void MicroGamerBase::fillRect
 
 void MicroGamerBase::fillScreen(uint8_t color)
 {
-    memset(sBuffer, 0, WIDTH*HEIGHT/8);
+    memset(sBuffer, color ? 0xFF : 0x00, WIDTH*HEIGHT/8);
 }
 
 void MicroGamerBase::drawRoundRect
