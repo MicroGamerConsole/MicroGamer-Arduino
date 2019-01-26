@@ -4,7 +4,7 @@ June 11, 2015
 Copyright (C) 2015 David Martinez
 All rights reserved.
 This code is the most basic barebones code for showing how to use buttons in
-Arduboy.
+arduboy.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -12,10 +12,10 @@ License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
 */
 
-#include <Arduboy2.h>
+#include <MicroGamer.h>
 
-// Make an instance of arduboy used for many functions
-Arduboy2 arduboy;
+// Make an instance of MicroGamer used for many functions
+MicroGamer mg;
 
 // Variables for your game go here.
 char title[] = "Press Buttons!";
@@ -35,7 +35,7 @@ byte y;
 // This is the highest value that x can be without the end of the text
 // going farther than the right side of the screen. We add one because
 // there will be a 1 pixel space at the end of the last character.
-// WIDTH and HEIGHT are defined in the Arduboy library.
+// WIDTH and HEIGHT are defined in the mg library.
 #define X_MAX (WIDTH - (NUM_CHARS * CHAR_WIDTH) + 1)
 
 // This is the highest value that y can be without the text going below
@@ -46,12 +46,12 @@ byte y;
 // This function runs once in your game.
 // use it for anything that needs to be set only once in your game.
 void setup() {
-  //initiate arduboy instance
-  arduboy.begin();
+  //initiate mg instance
+  mg.begin();
 
   // here we set the framerate to 30, we do not need to run at default 60 and
   // it saves us battery life.
-  arduboy.setFrameRate(30);
+  mg.setFrameRate(30);
 
   // set x and y to the middle of the screen
   x = (WIDTH / 2) - (NUM_CHARS * CHAR_WIDTH / 2);
@@ -63,7 +63,7 @@ void setup() {
 // this is where our game logic goes.
 void loop() {
   // pause render until it's time for the next frame
-  if (!(arduboy.nextFrame()))
+  if (!(mg.nextFrame()))
     return;
 
   // the next couple of lines will deal with checking if the D-pad buttons
@@ -72,35 +72,35 @@ void loop() {
   // text on the screen.
 
   // if the right button is pressed move 1 pixel to the right every frame
-  if(arduboy.pressed(RIGHT_BUTTON) && (x < X_MAX)) {
+  if(mg.pressed(RIGHT_BUTTON) && (x < X_MAX)) {
     x++;
   }
 
   // if the left button is pressed move 1 pixel to the left every frame
-  if(arduboy.pressed(LEFT_BUTTON) && (x > 0)) {
+  if(mg.pressed(LEFT_BUTTON) && (x > 0)) {
     x--;
   }
 
-  // if the up button or B button is pressed move 1 pixel up every frame
-  if((arduboy.pressed(UP_BUTTON) || arduboy.pressed(B_BUTTON)) && (y > 0)) {
+  // if the up button or B button or X button is pressed move 1 pixel up every frame
+  if((mg.pressed(UP_BUTTON) || mg.pressed(B_BUTTON) || mg.pressed(X_BUTTON)) && (y > 0)) {
     y--;
   }
 
-  // if the down button or A button is pressed move 1 pixel down every frame
-  if((arduboy.pressed(DOWN_BUTTON) || arduboy.pressed(A_BUTTON)) && (y < Y_MAX)) {
+  // if the down button or A button or Y button is pressed move 1 pixel down every frame
+  if((mg.pressed(DOWN_BUTTON) || mg.pressed(A_BUTTON) || mg.pressed(Y_BUTTON)) && (y < Y_MAX)) {
     y++;
   }
 
 
   // we clear our screen to black
-  arduboy.clear();
+  mg.clear();
 
   // we set our cursor x pixels to the right and y down from the top
-  arduboy.setCursor(x, y);
+  mg.setCursor(x, y);
 
   // then we print to screen what is stored in our title variable we declared earlier
-  arduboy.print(title);
+  mg.print(title);
 
-  // then we finaly we tell the arduboy to display what we just wrote to the display.
-  arduboy.display();
+  // then we finaly we tell the MicroGamer to display what we just wrote to the display.
+  mg.display();
 }
