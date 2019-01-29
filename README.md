@@ -2,11 +2,37 @@
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/MicroGamerConsole/Lobby)
 
-The Micro:Gamer Arduino library is maintained in a git repository hosted on [GitHub](https://github.com/) at:
+The Micro:Gamer Arduino library is a fork of the [Arduboy2 library](https://github.com/MLXXXp/Arduboy2), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the [Micro:Gamer](https://hackaday.io/project/47760-microgamer) miniature game system.
 
-https://github.com/MicroGamerConsole/MicroGamer-Arduino
+## Getting started
 
-The Micro:Gamer Arduino library is a fork of the [Arduboy2 library](), which provides a standard *application programming interface* (API) to the display, buttons and other hardware of the [Micro:Gamer](https://hackaday.io/project/47760-microgamer) miniature game system.
+ - Follow the first page of AdaFruit's micro:bit guide for the Arduino IDE:
+
+   https://learn.adafruit.com/use-micro-bit-with-arduino/install-board-and-blink
+
+ - Install the Arduino Micro:Gamer library:
+   - In the Arduino IDE select from the menus: `Sketch > Include Library > Manage Libraries...`
+   - In the Library Manager *Filter your search...* field enter *microgamer*.
+   - Click somewhere within the `MicroGamer` entry.
+   - Click on the *Install* button.
+
+ - Install your first game:
+   - In the Arduino IDE, select from the menus: `File > Examples > MicroGamer -> ArduBreakout`
+   - Connect your micro:bit board
+   - In the Arduino IDE, click on the `Upload` button (arrow in a circle)
+  
+ - You can now try one of the games available:
+   - TheBounceArduboy : https://github.com/MicroGamerConsole/TheBounceArduboy
+   - Mine Sweeper : https://github.com/MicroGamerConsole/minesweeper
+   - MicroCity : https://github.com/MicroGamerConsole/MicroCity
+   - Galaxion : https://github.com/MicroGamerConsole/galaxion
+   - Dark And Under : https://github.com/MicroGamerConsole/Dark-And-Under
+   - Crates3D : https://github.com/MicroGamerConsole/Crates3D
+   - Asteroids : https://github.com/MicroGamerConsole/arduino-asteroids
+   - ArduBoyJetPack : https://github.com/MicroGamerConsole/ArduBoyJetPack
+   - Arduboy3d : https://github.com/MicroGamerConsole/arduboy3d
+   - ArduBreakout : https://github.com/uXeBoy/MicroGamer-ArduBreakout
+   - A-Maze : https://github.com/uXeBoy/MicroGamer-A-Maze
 
 ## Library documentation
 
@@ -17,19 +43,6 @@ https://MLXXXp.github.io/documents/Arduino/libraries/Arduboy2/Doxygen/html/index
 A generated PDF file can be found at:
 
 https://MLXXXp.github.io/documents/Arduino/libraries/Arduboy2/Doxygen/pdf/Arduboy2.pdf
-
-## Installation
-
-The Arduboy2 library can be installed using the Arduino IDE Library Manager:
-
-- In the Arduino IDE select from the menus: `Sketch > Include Library > Manage Libraries...`
-- In the Library Manager *Filter your search...* field enter *arduboy2*.
-- Click somewhere within the Arduboy2 entry.
-- Click on the *Install* button.
-
-For more library installation information see
-
-[Installing Additional Arduino Libraries - Using the Library Manager](https://www.arduino.cc/en/Guide/Libraries#toc3)
 
 ## Start up features
 
